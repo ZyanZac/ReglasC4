@@ -1,13 +1,17 @@
 {
   "dsl_reference": "https://structurizr.com/dsl",
   "fixed_template": {
-    "systemContext": "workspace \"SYSTEM_NAME\" {\n    model {\n        USER = person \"USER_NAME\" {\n            description \"USER_PURPOSE\"\n            tags \"User\"\n        }\n        group \"PRINCIPAL_GROUP\" {\n            SYSTEM = softwareSystem \"SYSTEM_NAME\" {\n                description \"SYSTEM_PURPOSE\"\n                tags \"system\"\n            }\n        }\n        group \"PROVIDER_GROUP\" { optional true;\n            EXTERNAL_SYSTEM = softwareSystem \"EXTERNAL_SYSTEM_NAME\" {\n                description \"EXTERNAL_SYSTEM_PURPOSE\"\n                tags \"external PROVIDER_TAG\"\n            }\n        }\n        USER -> SYSTEM \"VERB DESCRIPTION\"\n        SYSTEM -> EXTERNAL_SYSTEM \"VERB DESCRIPTION\"\n    }\n    views {\n        systemContext SYSTEM \"SystemContext\" { optional true;\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" {\n                background #08427b\n                color white\n                shape person\n            }\n            element \"system\" {\n                background #003366\n                color white\n                shape roundedbox\n            }\n            element \"external\" {\n                background #f2f2f2\n                color black\n                shape roundedbox\n            }\n            element \"sat\" {\n                background #666666\n                color white\n                shape roundedbox\n            }\n            element \"sep\" {\n                background #666666\n                color white\n                shape roundedbox\n            }\n            element \"firebase\" {\n                background #4285F4\n                color white\n                shape roundedbox\n            }\n            element \"amazon\" {\n                background #FF9900\n                color black\n                shape roundedbox\n            }\n        }\n    }\n}"
+    "systemContext": "workspace \"SYSTEM_NAME\" {\n    model {\n        USER = person \"USER_NAME\" {\n            description \"USER_PURPOSE\"\n            tags \"User\"\n        }\n        group \"PRINCIPAL_GROUP\" {\n            SYSTEM = softwareSystem \"SYSTEM_NAME\" {\n                description \"SYSTEM_PURPOSE\"\n                tags \"system\"\n            }\n        }\n        group \"PROVIDER_GROUP\" {\n            EXTERNAL_SYSTEM = softwareSystem \"EXTERNAL_SYSTEM_NAME\" {\n                description \"EXTERNAL_SYSTEM_PURPOSE\"\n                tags \"external PROVIDER_TAG\"\n            }\n        }\n        USER -> SYSTEM \"VERB DESCRIPTION\"\n        SYSTEM -> EXTERNAL_SYSTEM \"VERB DESCRIPTION\"\n    }\n    views {\n        systemContext SYSTEM \"SystemContext\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" {\n                background #08427b\n                color white\n                shape person\n            }\n            element \"system\" {\n                background #003366\n                color white\n                shape roundedbox\n            }\n            element \"external\" {\n                background #f2f2f2\n                color black\n                shape roundedbox\n            }\n            element \"sat\" {\n                background #666666\n                color white\n                shape roundedbox\n            }\n            element \"sep\" {\n                background #666666\n                color white\n                shape roundedbox\n            }\n            element \"firebase\" {\n                background #4285F4\n                color white\n                shape roundedbox\n            }\n            element \"amazon\" {\n                background #FF9900\n                color black\n                shape roundedbox\n            }\n        }\n    }\n}",
+    "container": "workspace \"SYSTEM_NAME\" {\n    model {\n        MAIN_SYSTEM = softwareSystem \"MAIN_SYSTEM_NAME\" {\n            CONTAINER = container \"CONTAINER_NAME\" {\n                description \"CONTAINER_PURPOSE\"\n                tags \"container\"\n                technology \"TECH\"\n            }\n        }\n        USER = person \"USER_NAME\" { optional true;\n            description \"USER_PURPOSE\"\n            tags \"User\"\n        }\n        EXTERNAL_SYSTEM = softwareSystem \"EXTERNAL_SYSTEM_NAME\" { optional true;\n            description \"EXTERNAL_SYSTEM_PURPOSE\"\n            tags \"external\"\n        }\n        USER -> CONTAINER \"VERB DESCRIPTION\"\n        CONTAINER -> CONTAINER \"VERB DESCRIPTION\"\n        CONTAINER -> EXTERNAL_SYSTEM \"VERB DESCRIPTION\"\n    }\n    views {\n        container MAIN_SYSTEM \"Containers\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" {\n                background #08427b\n                color white\n                shape person\n            }\n            element \"SoftwareSystem\" {\n                background #e0e0e0\n                color black\n                shape roundedbox\n            }\n            element \"external\" {\n                background #f2f2f2\n                color black\n                shape roundedbox\n            }\n            element \"container\" {\n                background #d0d0ff\n                color black\n                shape roundedbox\n            }\n        }\n    }\n}",
+    "component": "workspace \"SYSTEM_NAME\" {\n    model {\n        MAIN_SYSTEM = softwareSystem \"MAIN_SYSTEM_NAME\" {\n            CONTAINER = container \"CONTAINER_NAME\" {\n                COMPONENT = component \"COMPONENT_NAME\" {\n                    description \"COMPONENT_PURPOSE\"\n                    tags \"component\"\n                    technology \"TECH\"\n                }\n            }\n        }\n        USER = person \"USER_NAME\" { optional true;\n            description \"USER_PURPOSE\"\n            tags \"User\"\n        }\n        EXTERNAL_SYSTEM = softwareSystem \"EXTERNAL_SYSTEM_NAME\" { optional true;\n            description \"EXTERNAL_SYSTEM_PURPOSE\"\n            tags \"external\"\n        }\n        USER -> COMPONENT \"VERB DESCRIPTION\"\n        COMPONENT -> COMPONENT \"VERB DESCRIPTION\"\n        COMPONENT -> EXTERNAL_SYSTEM \"VERB DESCRIPTION\"\n    }\n    views {\n        component CONTAINER \"Components\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" {\n                background #08427b\n                color white\n                shape person\n            }\n            element \"SoftwareSystem\" {\n                background #e0e0e0\n                color black\n                shape roundedbox\n            }\n            element \"external\" {\n                background #f2f2f2\n                color black\n                shape roundedbox\n            }\n            element \"container\" {\n                background #d0d0ff\n                color black\n                shape roundedbox\n            }\n            element \"component\" {\n                background #b0ffb0\n                color black\n                shape box\n            }\n        }\n    }\n}"
   },
   "template_comments": {
     "workspace": "System name, e.g., Certificados Digitales",
     "person": "User role, e.g., Representante del Instituto",
     "group": "Group for systems, e.g., Sistema Institucional or Gobierno",
     "softwareSystem": "System, e.g., app = softwareSystem 'CertificadosService'",
+    "container": "Container, e.g., webApp = container 'WebApp'",
+    "component": "Component, e.g., controller = component 'Controller'",
     "relationship": "Action, e.g., solicita certificados",
     "views": "Diagram views and styles"
   },
@@ -16,84 +20,196 @@
       "system": [
         "Service",
         "API",
-        "App"
+        "App",
+        "Microservice",
+        "Platform",
+        "Gateway",
+        "EventBus",
+        "PaymentGateway",
+        "NotificationService",
+        "AnalyticsEngine"
       ],
       "data_storage": [
         "Database",
-        "Repository"
+        "Repository",
+        "Queue",
+        "Cache",
+        "FileStore",
+        "DataWarehouse",
+        "BlobStorage",
+        "GraphDB",
+        "MongoDB",
+        "PostgreSQL",
+        "MySQL"
       ],
       "interface": [
         "Frontend",
-        "UI"
+        "UI",
+        "Mobile",
+        "CLI",
+        "Dashboard",
+        "Portal",
+        "WebClient",
+        "NativeApp"
+      ],
+      "container": [
+        "WebApp",
+        "API",
+        "Database",
+        "Queue",
+        "Cache",
+        "MobileApp",
+        "GraphQLAPI",
+        "MessageBroker",
+        "BatchProcessor",
+        "NativeScriptApp",
+        "ReactNativeApp",
+        "FlutterApp"
+      ],
+      "component": [
+        "Controller",
+        "Model",
+        "Service",
+        "Repository",
+        "Adapter",
+        "Processor",
+        "Validator",
+        "Orchestrator",
+        "EventHandler",
+        "APIClient"
       ]
     },
     "allowed_verbs": [
+      "valida",
+      "almacena",
       "genera",
       "consulta",
+      "envía",
+      "solicita",
       "verifica",
       "autentica",
-      "almacena",
-      "solicita",
+      "procesa",
+      "carga",
       "firma",
-      "carga"
+      "notifica",
+      "orquesta",
+      "transmite",
+      "sincroniza",
+      "renderiza",
+      "integra"
     ],
     "allowed_tags": [
       "User",
       "system",
       "external",
+      "container",
+      "component",
       "sat",
       "sep",
       "firebase",
-      "amazon"
+      "amazon",
+      "payment",
+      "authentication",
+      "messaging",
+      "analytics",
+      "logging",
+      "mobile",
+      "web",
+      "database",
+      "api"
     ],
     "forbidden_names": [
       "module",
       "tool",
-      "resource"
+      "resource",
+      "componente",
+      "platforma",
+      "framework",
+      "library",
+      "package",
+      "plugin"
     ],
     "synonyms": {
-      "crea|produce": "genera",
-      "busca|lee": "consulta",
-      "valida|confirma": "verifica",
-      "autentica|identifica": "autentica",
-      "guarda|persiste": "almacena",
-      "pide|requiere": "solicita",
-      "firma|certifica": "firma",
-      "carga|sube": "carga",
-      "base de datos|almacenamiento": "Database",
-      "aplicación|sistema": "App",
-      "servicio": "Service",
-      "interfaz|web": "Frontend"
+      "autentica|confirma|identifica|authenticates": "autentica",
+      "verifica|valida|comprueba|checks": "verifica",
+      "guarda|persiste|saves|stores": "almacena",
+      "crea|produce|generates|creates": "solicita",
+      "busca|lee|retrieves|reads": "consulta",
+      "envía|transmite|delivers|sends": "envía",
+      "pide|requiere|requests|requires": "solicita",
+      "procesa|analiza|handles|processes": "procesa",
+      "carga|sube|uploads": "carga",
+      "firma|certifica|signs": "carga",
+      "notifica|informa|alerts|notifies": "notifica",
+      "orquesta|coordina|manages|orchestrates": "orquesta",
+      "transmite|fluye|streams|transmits": "transmite",
+      "sincroniza|actualiza|syncs|updates": "sincroniza",
+      "renderiza|muestra|renders|displays": "renderiza",
+      "integra|conecta|integrates|links": "integra",
+      "base de datos|almacenamiento|storage|db": "Database",
+      "aplicación|sistema|application|system": "App",
+      "servicio|microservicio|service": "Service",
+      "interfaz|web|interface|gui": "Frontend",
+      "cola|mensajería|queue|messaging": "Queue",
+      "caché|memoria|cache": "Cache",
+      "móvil|app móvil|mobile|native app": "MobileApp",
+      "controlador|gestor|controller": "Controller",
+      "adaptador|conector|adapter": "Adapter",
+      "puerta de enlace|gateway|entrypoint": "Gateway",
+      "almacén de datos|data warehouse": "DataWarehouse",
+      "nativescript|reactnative|flutter|xamarin": "MobileApp"
     }
   },
   "mapping_guidelines": {
-    "usage_note": "Map descriptions to System Context DSL elements, prioritizing System Context level.",
+    "usage_note": "Map descriptions to DSL elements based on specified C4 level, handling unlisted terms dynamically.",
     "level_detection": {
       "systemContext": [
         "context",
+        "system context",
         "system",
         "application",
         "web",
         "service",
         "external system"
       ],
-      "restrict_others": "Reject container or component diagrams unless explicitly specified."
+      "container": [
+        "container",
+        "containers",
+        "web app",
+        "api",
+        "database",
+        "mobile app"
+      ],
+      "component": [
+        "component",
+        "components",
+        "controller",
+        "repository",
+        "service",
+        "model"
+      ],
+      "restrict_others": "Reject levels not explicitly specified in the description. Default to systemContext only if no level is mentioned."
     },
     "systems": {
       "keywords": [
         "application",
         "app",
         "service",
-        "system"
+        "system",
+        "microservice",
+        "gateway",
+        "platform"
       ],
-      "maps_to": "softwareSystem with tag system",
-      "example": "If 'web app', create 'app = softwareSystem \"CertificadosService\"' with tag 'system'."
+      "maps_to": "softwareSystem with tag system for systemContext, container/component for respective levels",
+      "example": "If 'web app' in systemContext, create 'app = softwareSystem \"CertificadosService\"' with tag 'system'."
     },
     "users": {
       "keywords": [
+        "user",
+        "customer",
+        "admin",
         "representante",
-        "encargado",
-        "admin"
+        "encargado"
       ],
       "maps_to": "person with tag User",
       "example": "If 'representante', create 'representante = person \"Representante\"' with tag 'User'."
@@ -105,47 +221,78 @@
         "firebase",
         "rekognition",
         "amazon",
-        "google"
+        "google",
+        "paypal",
+        "stripe",
+        "aws",
+        "azure",
+        "gcp"
       ],
-      "maps_to": "softwareSystem in provider-specific group with tags external and provider",
-      "example": "If 'SAT', create 'sat = softwareSystem \"SAT\"' in group 'Gobierno' with tag 'external sat'."
+      "maps_to": "softwareSystem in provider-specific group with tags external and provider for systemContext, softwareSystem for container/component",
+      "example": "If 'SAT' in systemContext, create 'sat = softwareSystem \"SAT\"' in group 'Gobierno' with tag 'external sat'."
     },
     "relationships": {
       "keywords_to_verbs": {
-        "genera|crea": "solicita",
-        "consulta|busca": "consulta",
-        "verifica|valida": "verifica",
-        "autentica|identifica": "autentica",
-        "almacena|guarda": "almacena",
-        "pide|requiere": "solicita",
-        "firma|certifica": "carga",
-        "carga|sube": "carga"
+        "consulta|busca|lee|retrieves": "consulta",
+        "guarda|almacena|saves|stores": "almacena",
+        "crea|produce|generates|creates": "solicita",
+        "envía|transmite|delivers|sends": "envía",
+        "pide|requiere|requests|requires": "solicita",
+        "verifica|valida|comprueba|checks": "verifica",
+        "autentica|confirma|identifica|authenticates": "autentica",
+        "procesa|analiza|handles|processes": "procesa",
+        "carga|sube|uploads": "carga",
+        "firma|certifica|signs": "carga",
+        "notifica|informa|alerts|notifies": "notifica",
+        "orquesta|coordina|manages|orchestrates": "orquesta",
+        "transmite|fluye|streams|transmits": "transmite",
+        "sincroniza|actualiza|syncs|updates": "sincroniza",
+        "renderiza|muestra|renders|displays": "renderiza",
+        "integra|conecta|integrates|links": "integra"
       },
       "clarifications": {
-        "sat|no se envía": "Use 'carga' for user-provided signature files, no direct SAT interaction.",
-        "firebase|backend": "Use 'almacena' for database and backend interactions."
+        "sat|no se envía|user-provided": "Use 'carga' for user-provided signature files, no direct SAT interaction.",
+        "firebase|backend": "Use 'almacena' for database and backend interactions.",
+        "no interaction|no data sent": "Map to user-driven action (e.g., 'carga') or internal app processing.",
+        "any|user action": "Map to user-driven verbs like 'solicita', 'carga'."
       },
       "example": "If 'app generates certificates', create 'user -> app \"Solicita certificados\"'. If 'SAT provides signature', create 'user -> app \"Carga firma electrónica\"'.",
-      "syntax": "Use 'SOURCE -> DESTINATION \"VERB DESCRIPTION\"'. Description must start with an allowed verb and be distinct from element descriptions."
+      "syntax": "Use 'SOURCE -> DESTINATION \"VERB DESCRIPTION\"' within model block. Description must start with an allowed verb, be concise, and distinct from element descriptions."
     },
     "groups": {
       "keywords_to_groups": {
         "sat|sep": "Gobierno",
         "firebase": "Google",
-        "rekognition|amazon": "Amazon"
+        "rekognition|amazon|aws": "Amazon",
+        "paypal|stripe": "Pagos",
+        "azure": "Azure",
+        "gcp": "GCP"
       },
       "example": "If 'SAT', group under 'Gobierno' with tag 'sat'.",
       "fallback": "Use 'Servicios Externos' for unspecified external systems."
     },
+    "dynamic_mapping": {
+      "unknown_technologies": "Map unlisted technology terms to closest allowed_name based on context (e.g., 'NativeScript' → 'MobileApp' if mobile-related) or allow as technology property with generic container (e.g., container 'App' { technology 'NativeScript' }). Assign default tag 'container' or 'external' and style (background #f2f2f2; color black; shape roundedbox).",
+      "unknown_domain_terms": "Map unlisted domain-specific terms to softwareSystem or container with descriptive name (e.g., 'BlockchainLedger' → softwareSystem 'BlockchainLedger'). Assign default tag 'external' or 'container' and style.",
+      "context_clues": {
+        "made with|built with|developed in|uses|implemented in": "Map term to technology property (e.g., 'made with NativeScript' → technology 'NativeScript').",
+        "mobile|app|phone": "Map to container with type 'MobileApp' and tag 'mobile'.",
+        "database|storage|data": "Map to container with type 'Database' and tag 'database'.",
+        "api|endpoint|rest|graphql": "Map to container with type 'API' and tag 'api'.",
+        "external|third-party|provider": "Map to softwareSystem in provider-specific group with tag 'external'.",
+        "machine learning|ai|ml|neural": "Map to container with type 'Processor' and tag 'processor'."
+      },
+      "example": "If 'made with NativeScript' in container description, create 'mobile = container \"MobileApp\" { technology \"NativeScript\"; tags \"container mobile\" }'. If 'BlockchainLedger' in systemContext, create 'group \"Servicios Externos\" { ledger = softwareSystem \"BlockchainLedger\" { tags \"external\" } }'."
+    },
     "fallback_mapping": {
-      "unknown_verbs": "Use 'consulta' for queries, 'solicita' for requests.",
-      "unknown_names": "Use 'Service' for systems, 'Database' for storage.",
+      "unknown_verbs": "Use 'consulta' for queries, 'solicita' for requests, 'carga' for uploads, based on context.",
+      "unknown_names": "Use 'Service' for systems, 'Database' for storage, 'Frontend' for interfaces, 'Service' for components, or retain descriptive name for unlisted terms with dynamic_mapping.",
       "unknown_groups": "Use 'Servicios Externos'."
     },
     "optional_rules": {
-      "groups": "Use provider-specific groups for external systems.",
-      "person": "Include only if users are mentioned.",
-      "systemContext": "Include if description specifies a context diagram."
+      "groups": "Mandatory provider-specific groups for external systems in System Context.",
+      "person": "Include only if users are mentioned in description.",
+      "systemContext_view": "Include view if description specifies a context diagram."
     }
   },
   "validation_order": [
@@ -207,13 +354,23 @@
       "description": "Una aplicación web que genera los xml de certificados y títulos al representante de su instituto privado. Se vincula con Amazon Rekognition para datos biométricos, Firebase para la base de datos y backend, el SAT para la firma electrónica y la SEP(MET/MEC) para los lineamientos de los certificados y títulos. Realmente lo único que hace el SAT es darte tu firma electrónica. El usuario debería tener todos los archivos relacionados a esta y cargarlos en la aplicación para hacer válida la firma. No se envía nada al SAT.",
       "level": "systemContext",
       "dsl": "workspace \"Certificados Digitales\" {\n    model {\n        representante = person \"Representante del Instituto\" {\n            description \"Encargado de generar certificados y títulos digitales\"\n            tags \"User\"\n        }\n        group \"Sistema Institucional\" {\n            app = softwareSystem \"CertificadosService\" {\n                description \"Sistema para generar certificados en XML\"\n                tags \"system\"\n            }\n        }\n        group \"Gobierno\" {\n            sat = softwareSystem \"SAT\" {\n                description \"Provee firma electrónica para certificados\"\n                tags \"external sat\"\n            }\n            sep = softwareSystem \"SEP (MET/MEC)\" {\n                description \"Define lineamientos para certificados\"\n                tags \"external sep\"\n            }\n        }\n        group \"Google\" {\n            firebase = softwareSystem \"Firebase\" {\n                description \"Gestiona autenticación y almacenamiento\"\n                tags \"external firebase\"\n            }\n        }\n        group \"Amazon\" {\n            rekognition = softwareSystem \"Amazon Rekognition\" {\n                description \"Verifica datos biométricos\"\n                tags \"external amazon\"\n            }\n        }\n        representante -> app \"Solicita certificados digitales\"\n        representante -> app \"Carga firma electrónica\"\n        app -> sep \"Verifica lineamientos\"\n        app -> firebase \"Autentica y almacena datos\"\n        app -> rekognition \"Valida biometría\"\n    }\n    views {\n        systemContext app \"SystemContext\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"system\" { background #003366; color white; shape roundedbox }\n            element \"external\" { background #f2f2f2; color black; shape roundedbox }\n            element \"sat\" { background #666666; color white; shape roundedbox }\n            element \"sep\" { background #666666; color white; shape roundedbox }\n            element \"firebase\" { background #4285F4; color white; shape roundedbox }\n            element \"amazon\" { background #FF9900; color black; shape roundedbox }\n        }\n    }\n}"
+    },
+    {
+      "description": "Un diagrama de contenedores para una aplicación móvil que genera certificados, hecha con NativeScript, con un backend en Node.js y base de datos en Firebase. Se vincula con Amazon Rekognition para biometría y SEP para lineamientos.",
+      "level": "container",
+      "dsl": "workspace \"Certificados Digitales\" {\n    model {\n        app = softwareSystem \"CertificadosService\" {\n            mobileApp = container \"MobileApp\" {\n                description \"Interfaz móvil para usuarios\"\n                tags \"container mobile\"\n                technology \"NativeScript\"\n            }\n            backend = container \"Backend\" {\n                description \"Lógica de negocio y procesamiento\"\n                tags \"container api\"\n                technology \"Node.js\"\n            }\n            database = container \"Database\" {\n                description \"Almacena datos de certificados\"\n                tags \"container database\"\n                technology \"Firebase\"\n            }\n        }\n        representante = person \"Representante del Instituto\" {\n            description \"Encargado de generar certificados\"\n            tags \"User\"\n        }\n        group \"Gobierno\" {\n            sep = softwareSystem \"SEP (MET/MEC)\" {\n                description \"Define lineamientos para certificados\"\n                tags \"external sep\"\n            }\n        }\n        group \"Amazon\" {\n            rekognition = softwareSystem \"Amazon Rekognition\" {\n                description \"Verifica datos biométricos\"\n                tags \"external amazon\"\n            }\n        }\n        representante -> mobileApp \"Solicita certificados y carga firma\"\n        mobileApp -> backend \"Envía solicitudes\"\n        backend -> database \"Almacena y consulta datos\"\n        backend -> sep \"Verifica lineamientos\"\n        backend -> rekognition \"Valida biometría\"\n    }\n    views {\n        container app \"Containers\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"SoftwareSystem\" { background #e0e0e0; color black; shape roundedbox }\n            element \"external\" { background #f2f2f2; color black; shape roundedbox }\n            element \"container\" { background #d0d0ff; color black; shape roundedbox }\n            element \"mobile\" { background #d0d0ff; color black; shape roundedbox }\n            element \"database\" { background #d0d0ff; color black; shape roundedbox }\n            element \"api\" { background #d0d0ff; color black; shape roundedbox }\n        }\n    }\n}"
+    },
+    {
+      "description": "Un diagrama de componentes para el backend de una aplicación web que genera certificados, incluyendo un controlador de certificados, servicio de biometría, y repositorio de datos. Se vincula con Firebase y Amazon Rekognition.",
+      "level": "component",
+      "dsl": "workspace \"Certificados Digitales\" {\n    model {\n        app = softwareSystem \"CertificadosService\" {\n            backend = container \"Backend\" {\n                certController = component \"Controlador de Certificados\" {\n                    description \"Maneja solicitudes de certificados\"\n                    tags \"component\"\n                    technology \"Node.js\"\n                }\n                bioService = component \"Servicio de Biometría\" {\n                    description \"Integra verificación biométrica\"\n                    tags \"component\"\n                    technology \"Node.js\"\n                }\n                dataRepo = component \"Repositorio de Datos\" {\n                    description \"Accede a datos de certificados\"\n                    tags \"component\"\n                    technology \"Node.js\"\n                }\n            }\n        }\n        representante = person \"Representante del Instituto\" {\n            description \"Encargado de generar certificados\"\n            tags \"User\"\n        }\n        group \"Google\" {\n            firebase = softwareSystem \"Firebase\" {\n                description \"Gestiona almacenamiento\"\n                tags \"external firebase\"\n            }\n        }\n        group \"Amazon\" {\n            rekognition = softwareSystem \"Amazon Rekognition\" {\n                description \"Verifica datos biométricos\"\n                tags \"external amazon\"\n            }\n        }\n        representante -> certController \"Solicita certificados\"\n        certController -> bioService \"Solicita verificación biométrica\"\n        certController -> dataRepo \"Almacena y consulta datos\"\n        bioService -> rekognition \"Valida biometría\"\n        dataRepo -> firebase \"Almacena datos\"\n    }\n    views {\n        component backend \"Components\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"SoftwareSystem\" { background #e0e0e0; color black; shape roundedbox }\n            element \"external\" { background #f2f2f2; color black; shape roundedbox }\n            element \"container\" { background #d0d0ff; color black; shape roundedbox }\n            element \"component\" { background #b0ffb0; color black; shape box }\n        }\n    }\n}"
     }
   ],
   "known_issues": [
     {
       "issue": "Incorrect C4 level",
       "description": "AI generated Component or Container diagram instead of System Context.",
-      "correction": "Enforce System Context level unless explicitly specified (R04).",
+      "correction": "Enforce specified level (R04).",
       "example": {
         "invalid": "app = softwareSystem \"App\" { ui = container \"UI\" { } }",
         "corrected": "app = softwareSystem \"App\" { description \"App\"; tags \"system\" }"
@@ -222,16 +379,16 @@
     {
       "issue": "Redundant descriptions",
       "description": "AI used similar descriptions for elements and relationships.",
-      "correction": "Ensure relationship descriptions are distinct (R15).",
+      "correction": "Ensure distinct descriptions (R15).",
       "example": {
-        "invalid": "app = softwareSystem \"App\" { description \"Genera certificados\" } user -> app \"Genera certificados\"",
+        "invalid": "app = softwareSystem \"App\" { description \"Genera certificados\" } user -> app \"Usa la aplicación para generar certificados\"",
         "corrected": "app = softwareSystem \"App\" { description \"Sistema para certificados\" } user -> app \"Solicita certificados\""
       }
     },
     {
       "issue": "Comments in DSL",
       "description": "AI included comments, causing potential parsing errors.",
-      "correction": "Remove all comments before generation (R12).",
+      "correction": "Remove all comments (R12).",
       "example": {
         "invalid": "// Relaciones\napp -> db \"Consulta datos\"",
         "corrected": "app -> db \"Consulta datos\""
@@ -239,17 +396,44 @@
     },
     {
       "issue": "Incorrect external system interaction",
-      "description": "AI assumed direct interaction with SAT despite clarification.",
-      "correction": "Parse clarifications to adjust relationships, e.g., use 'carga' for user-provided SAT signatures (R10).",
+      "description": "AI assumed direct interaction despite clarification.",
+      "correction": "Parse clarifications (R10).",
       "example": {
-        "invalid": "app -> sat \"Consulta firma electrónica\"",
+        "invalid": "app -> sat \"Valida firma electrónica\"",
         "corrected": "representante -> app \"Carga firma electrónica\""
+      }
+    },
+    {
+      "issue": "Misplaced relationships",
+      "description": "AI placed relationships outside model block.",
+      "correction": "Ensure relationships within model (R09).",
+      "example": {
+        "invalid": "workspace { model { } views { } user -> app \"Action\" }",
+        "corrected": "workspace { model { user -> app \"Action\" } views { } }"
+      }
+    },
+    {
+      "issue": "Incomplete grouping",
+      "description": "AI omitted provider-specific groups for external systems.",
+      "correction": "Enforce groups for all external systems (R05).",
+      "example": {
+        "invalid": "amazon = softwareSystem \"AmazonRekognition\" { }",
+        "corrected": "group \"Amazon\" { amazon = softwareSystem \"AmazonRekognition\" { } }"
+      }
+    },
+    {
+      "issue": "Unlisted technology or term",
+      "description": "AI rejected or incorrectly mapped unlisted terms like 'NativeScript'.",
+      "correction": "Use dynamic_mapping to process unlisted terms (R06).",
+      "example": {
+        "invalid": "mobile = container \"App\" { technology \"Unknown\" }",
+        "corrected": "mobile = container \"MobileApp\" { technology \"NativeScript\"; tags \"container mobile\" }"
       }
     }
   ],
   "generation_guidelines": {
-    "pre_validation": "Use systemContext template unless description explicitly specifies another level. Apply provider-specific groups, distinct descriptions, and clarification parsing per mapping_guidelines. Remove all comments (//, #, /*, */) before generation. Check known_issues.",
-    "post_validation": "Validate against rules in validation_order, ensuring System Context level."
+    "pre_validation": "Determine C4 level from description using level_detection, requiring explicit level specification. Apply provider-specific groups, distinct descriptions, and clarification parsing. Remove all comments (//, #, /*, */) before generation. Place relationships within model block. Use dynamic_mapping for unlisted terms. Check known_issues.",
+    "post_validation": "Validate against rules in validation_order, ensuring correct C4 level, syntax, and description adherence."
   },
   "rules": [
     {
@@ -301,14 +485,16 @@
     {
       "id": "R03-ELEMENT-DEFINED",
       "title": "Define all elements",
-      "description": "All used elements (softwareSystem, person) must be defined with identifier and multi-line properties.",
+      "description": "All used elements (softwareSystem, person, container, component) must be defined with identifier and multi-line properties.",
       "applies_to": [
         "softwareSystem",
-        "person"
+        "person",
+        "container",
+        "component"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Define as `IDENTIFIER = TYPE \"NAME\" {\n    description \"TEXT\"\n    tags \"TAG\"\n}`. Example: `app = softwareSystem \"App\" {\n    description \"App\"\n    tags \"system\"\n}`.",
+      "instruction": "Define as `IDENTIFIER = TYPE \"NAME\" {\n    description \"TEXT\"\n    tags \"TAG\"\n    technology \"TECH\"\n}`. Technology optional for softwareSystem/person. Example: `app = softwareSystem \"App\" {\n    description \"App\"\n    tags \"system\"\n}`.",
       "correction_strategy": "Add definition with generic name and description. Separate properties into lines.",
       "examples": [
         {
@@ -324,15 +510,15 @@
     },
     {
       "id": "R04-LEVEL-ENFORCEMENT",
-      "title": "Enforce System Context level",
-      "description": "Only generate System Context diagrams unless explicitly specified.",
+      "title": "Enforce specified C4 level",
+      "description": "Generate diagram at the level explicitly specified in the description.",
       "applies_to": [
         "model"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use only `person`, `softwareSystem`, `group`, and `->` relationships for System Context. Reject `container` or `component` unless description specifies Container or Component level. Example: `app = softwareSystem \"App\" { }`, not `app = softwareSystem \"App\" { ui = container \"UI\" { } }`.",
-      "correction_strategy": "Convert to System Context by replacing `container` or `component` with `softwareSystem`.",
+      "instruction": "Use `person`, `softwareSystem`, `group` for System Context; add `container` for Containers; add `component` for Components. Reject unspecified levels. Example: For System Context, use `app = softwareSystem \"App\" { }`, not `ui = container \"UI\" { }`.",
+      "correction_strategy": "Convert to specified level, replacing invalid elements (e.g., `container` → `softwareSystem` in System Context).",
       "examples": [
         {
           "valid": true,
@@ -348,14 +534,14 @@
     {
       "id": "R05-GROUP-REQUIRED",
       "title": "Required provider-specific grouping",
-      "description": "Systems must be in provider-specific groups for external systems.",
+      "description": "External systems in System Context must be in provider-specific groups.",
       "applies_to": [
         "softwareSystem"
       ],
       "severity": "error",
       "validation": "automated",
       "instruction": "Use `group \"NAME\" { }` for principal and provider-specific external systems (e.g., 'Gobierno' for SAT). Example: `group \"Gobierno\" { sat = softwareSystem \"SAT\" { } }`.",
-      "correction_strategy": "Move ungrouped systems to provider-specific groups per mapping_guidelines.groups.",
+      "correction_strategy": "Move ungrouped external systems to provider-specific groups per mapping_guidelines.groups.",
       "examples": [
         {
           "valid": true,
@@ -370,19 +556,25 @@
     },
     {
       "id": "R06-ALLOWED-NAMES",
-      "title": "Use allowed names",
-      "description": "Element names must use glossary terms.",
+      "title": "Use allowed or dynamically mapped names",
+      "description": "Element names must use glossary terms or dynamically mapped technologies/domain terms.",
       "applies_to": [
-        "softwareSystem.name"
+        "softwareSystem.name",
+        "container.name",
+        "component.name"
       ],
       "severity": "warning",
       "validation": "automated",
-      "instruction": "Use terms from allowed_names (e.g., Service, Database) with identifier. Example: `CertificadosService`.",
-      "correction_strategy": "Replace forbidden names with closest glossary term (e.g., module → Service).",
+      "instruction": "Use terms from allowed_names (e.g., Service, Database, Controller) or map unlisted terms per dynamic_mapping (e.g., 'NativeScript' → container 'MobileApp' { technology 'NativeScript' }). Example: `CertificadosService`, `container \"MobileApp\" { technology \"NativeScript\" }`.",
+      "correction_strategy": "Replace forbidden names with closest glossary term or apply dynamic_mapping (e.g., 'NativeScript' → 'MobileApp' with technology 'NativeScript').",
       "examples": [
         {
           "valid": true,
           "dsl": "app = softwareSystem \"CertificadosService\" {\n    description \"App\"\n    tags \"system\"\n}"
+        },
+        {
+          "valid": true,
+          "dsl": "mobile = container \"MobileApp\" {\n    description \"Mobile interface\"\n    technology \"NativeScript\"\n    tags \"container mobile\"\n}"
         },
         {
           "valid": false,
@@ -394,14 +586,14 @@
     {
       "id": "R07-SIMPLE-TAG",
       "title": "Use allowed tags",
-      "description": "Elements must use glossary tags.",
+      "description": "Elements must use glossary tags or dynamically created tags with default styles.",
       "applies_to": [
         "element.tags"
       ],
       "severity": "warning",
       "validation": "automated",
-      "instruction": "Use tags: User, system, external, sat, sep, firebase, amazon. Example: `tags \"external sat\"`.",
-      "correction_strategy": "Replace invalid tags with appropriate glossary tag.",
+      "instruction": "Use tags: User, system, external, container, component, sat, sep, firebase, amazon, payment, authentication, messaging, analytics, logging, mobile, web, database, api. Dynamic tags allowed with default external style. Example: `tags \"external sat\"`.",
+      "correction_strategy": "Replace invalid tags with appropriate glossary tag or assign default external style (background #f2f2f2; color black; shape roundedbox).",
       "examples": [
         {
           "valid": true,
@@ -417,14 +609,14 @@
     {
       "id": "R08-ALLOWED-ELEMENTS",
       "title": "Use allowed elements",
-      "description": "Model can only contain person, softwareSystem, group, and relationships.",
+      "description": "Model can only contain level-appropriate elements.",
       "applies_to": [
         "model"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use `person`, `softwareSystem`, `group`, and `->` relationships. No `system`, `container`, or `component`.",
-      "correction_strategy": "Replace invalid elements with correct type (e.g., `container` → `softwareSystem`).",
+      "instruction": "Use `person`, `softwareSystem`, `group` for System Context; add `container` for Containers; add `component` for Components. No `system` or `relationship`. Example: `app = softwareSystem \"App\" { }` for System Context.",
+      "correction_strategy": "Replace invalid elements with correct type (e.g., `container` → `softwareSystem` in System Context).",
       "examples": [
         {
           "valid": true,
@@ -433,43 +625,43 @@
         {
           "valid": false,
           "dsl": "app = container \"App\" { description \"App\" }",
-          "error": "Invalid element: container"
+          "error": "Invalid element: container in System Context"
         }
       ]
     },
     {
       "id": "R09-SYNTAX-VALIDATION",
       "title": "Ensure valid syntax",
-      "description": "DSL must have valid Structurizr syntax without semicolons.",
+      "description": "DSL must have valid Structurizr syntax without semicolons, with relationships in model block.",
       "applies_to": [
         "dsl.syntax"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Ensure balanced braces, closed quotes, no invalid characters, no semicolons. Example: `systemContext app \"SystemContext\" { include *\n    autoLayout lr }`.",
-      "correction_strategy": "Fix braces, quotes, remove invalid characters and semicolons.",
+      "instruction": "Ensure balanced braces, closed quotes, no invalid characters, no semicolons, and relationships within `model`. Example: `workspace { model { user -> app \"Action\" } views { systemContext app \"SystemContext\" { include *\n    autoLayout lr } } }`.",
+      "correction_strategy": "Fix braces, quotes, remove invalid characters/semicolons, move relationships to model block.",
       "examples": [
         {
           "valid": true,
-          "dsl": "workspace \"System\" { model { app = softwareSystem \"App\" { description \"App\"; tags \"system\" } } views { systemContext app \"SystemContext\" { include *\n            autoLayout lr } } }"
+          "dsl": "workspace \"System\" { model { app = softwareSystem \"App\" { description \"App\"; tags \"system\" } user -> app \"Consulta datos\" } views { systemContext app \"SystemContext\" { include *\n    autoLayout lr } } }"
         },
         {
           "valid": false,
-          "dsl": "views { systemContext app \"SystemContext\" { include *; autoLayout lr } }",
-          "error": "Semicolons in view definition"
+          "dsl": "workspace { model { } views { } user -> app \"Action\" }",
+          "error": "Relationships outside model block"
         }
       ]
     },
     {
       "id": "R10-ALLOWED-VERBS",
       "title": "Use allowed verbs in relationships",
-      "description": "Relationships must use glossary verbs.",
+      "description": "Relationships must use glossary verbs and respect clarifications.",
       "applies_to": [
         "relationship"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use verbs from allowed_verbs in `SOURCE -> DESTINATION \"VERB DESCRIPTION\"`. Example: `app -> db \"Consulta datos\"`. Parse clarifications to adjust verbs (e.g., 'carga' for SAT signatures).",
+      "instruction": "Use verbs from allowed_verbs in `SOURCE -> DESTINATION \"VERB DESCRIPTION\"`, checking clarifications. Example: `app -> db \"Consulta datos\"`, `user -> app \"Carga firma electrónica\"` for SAT clarification. Description must start with verb.",
       "correction_strategy": "Replace invalid verbs with closest allowed verb per synonyms or clarifications.",
       "examples": [
         {
@@ -532,19 +724,19 @@
     },
     {
       "id": "R13-VIEW-OPTIONAL",
-      "title": "Optional systemContext view",
-      "description": "Include systemContext view if specified, without semicolons.",
+      "title": "Optional view for level",
+      "description": "Include view matching specified C4 level, without semicolons.",
       "applies_to": [
         "views"
       ],
       "severity": "warning",
       "validation": "automated",
-      "instruction": "Use `systemContext IDENTIFIER \"SystemContext\" { include *\n            autoLayout lr }` if description requires a context diagram, else omit. Example: `systemContext app \"SystemContext\" {\n    include *\n    autoLayout lr\n}`.",
-      "correction_strategy": "Add systemContext if specified, remove semicolons, omit if not needed.",
+      "instruction": "Use `systemContext IDENTIFIER \"SystemContext\"` for System Context, `container IDENTIFIER \"Containers\"` for Containers, `component IDENTIFIER \"Components\"` for Components, with `include *; autoLayout lr`. Omit if not specified. Example: `systemContext app \"SystemContext\" {\n    include *\n    autoLayout lr\n}`.",
+      "correction_strategy": "Add missing view based on C4 level, remove semicolons.",
       "examples": [
         {
           "valid": true,
-          "dsl": "views { systemContext app \"SystemContext\" { include *\n            autoLayout lr } }"
+          "dsl": "views { systemContext app \"SystemContext\" { include *\n    autoLayout lr } }"
         },
         {
           "valid": true,
@@ -555,23 +747,27 @@
     {
       "id": "R14-STYLE-DEFINITIONS",
       "title": "Include style definitions",
-      "description": "Views must include styles for all relevant tags.",
+      "description": "Views must include styles matching fixed_template for the level, with defaults for dynamic tags.",
       "applies_to": [
         "views"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Include `styles` with styles for Person, system, external, sat, sep, firebase, amazon. Properties on separate lines. Example: `element \"system\" { background #003366\n                color white\n                shape roundedbox }`.",
-      "correction_strategy": "Add missing styles from template, separate properties.",
+      "instruction": "Include `styles` matching fixed_template for Person, system, external, container, component, sat, sep, firebase, amazon. Add defaults for dynamic tags (e.g., mobile, payment). Properties on separate lines. Example: `element \"system\" { background #003366\n    color white\n    shape roundedbox }`.",
+      "correction_strategy": "Replace invalid styles with fixed_template defaults, add default style (background #f2f2f2; color black; shape roundedbox) for dynamic tags, separate properties.",
       "examples": [
         {
           "valid": true,
-          "dsl": "views { styles { element \"Person\" { background #08427b\n                color white\n                shape person } } }"
+          "dsl": "views { styles { element \"Person\" { background #08427b\n    color white\n    shape person } } }"
+        },
+        {
+          "valid": true,
+          "dsl": "views { styles { element \"mobile\" { background #f2f2f2\n    color black\n    shape roundedbox } } }"
         },
         {
           "valid": false,
-          "dsl": "views { styles { } }",
-          "error": "Missing required styles"
+          "dsl": "views { styles { element \"system\" { background #1168bd } } }",
+          "error": "Invalid style for system"
         }
       ]
     },
@@ -586,7 +782,7 @@
       "severity": "error",
       "validation": "automated",
       "instruction": "Ensure relationship descriptions start with an allowed verb, differ from element descriptions, and are concise. Example: element `Sistema para certificados`, relationship `Solicita certificados`.",
-      "correction_strategy": "Modify relationship description to use a distinct, concise verb or phrase (e.g., 'Genera certificados' → 'Solicita certificados').",
+      "correction_strategy": "Modify relationship description to use a distinct, concise verb or phrase (e.g., 'Usa la aplicación para generar certificados' → 'Solicita certificados').",
       "examples": [
         {
           "valid": true,
@@ -594,7 +790,7 @@
         },
         {
           "valid": false,
-          "dsl": "app = softwareSystem \"App\" { description \"Genera certificados\"; tags \"system\" } user -> app \"Genera certificados digitales\"",
+          "dsl": "app = softwareSystem \"App\" { description \"Genera certificados\"; tags \"system\" } user -> app \"Usa la aplicación para generar certificados\"",
           "error": "Relationship description too similar to element description"
         }
       ]
