@@ -34,7 +34,8 @@
       "autentica",
       "almacena",
       "solicita",
-      "firma"
+      "firma",
+      "carga"
     ],
     "allowed_tags": [
       "User",
@@ -58,6 +59,7 @@
       "guarda|persiste": "almacena",
       "pide|requiere": "solicita",
       "firma|certifica": "firma",
+      "carga|sube": "carga",
       "base de datos|almacenamiento": "Database",
       "aplicación|sistema": "App",
       "servicio": "Service",
@@ -65,14 +67,17 @@
     }
   },
   "mapping_guidelines": {
-    "usage_note": "Map descriptions to System Context DSL elements.",
+    "usage_note": "Map descriptions to System Context DSL elements, prioritizing System Context level.",
     "level_detection": {
       "systemContext": [
+        "context",
         "system",
         "application",
         "web",
-        "service"
-      ]
+        "service",
+        "external system"
+      ],
+      "restrict_others": "Reject container or component diagrams unless explicitly specified."
     },
     "systems": {
       "keywords": [
@@ -113,9 +118,14 @@
         "autentica|identifica": "autentica",
         "almacena|guarda": "almacena",
         "pide|requiere": "solicita",
-        "firma|certifica": "firma"
+        "firma|certifica": "carga",
+        "carga|sube": "carga"
       },
-      "example": "If 'app generates certificates', create 'user -> app \"Solicita certificados\"'.",
+      "clarifications": {
+        "sat|no se envía": "Use 'carga' for user-provided signature files, no direct SAT interaction.",
+        "firebase|backend": "Use 'almacena' for database and backend interactions."
+      },
+      "example": "If 'app generates certificates', create 'user -> app \"Solicita certificados\"'. If 'SAT provides signature', create 'user -> app \"Carga firma electrónica\"'.",
       "syntax": "Use 'SOURCE -> DESTINATION \"VERB DESCRIPTION\"'. Description must start with an allowed verb and be distinct from element descriptions."
     },
     "groups": {
@@ -142,17 +152,17 @@
     "R01-WORKSPACE-ONLY",
     "R02-MODEL-VIEWS",
     "R03-ELEMENT-DEFINED",
-    "R06-GROUP-REQUIRED",
-    "R04-ALLOWED-NAMES",
-    "R10-SIMPLE-TAG",
-    "R11-ALLOWED-ELEMENTS",
-    "R12-SYNTAX-VALIDATION",
-    "R05-ALLOWED-VERBS",
-    "R09-CORRECT-REFERENCES",
-    "R08-NO-COMMENTS",
-    "R07-VIEW-OPTIONAL",
-    "R13-STYLE-DEFINITIONS",
-    "R14-FORMATTING",
+    "R04-LEVEL-ENFORCEMENT",
+    "R05-GROUP-REQUIRED",
+    "R06-ALLOWED-NAMES",
+    "R07-SIMPLE-TAG",
+    "R08-ALLOWED-ELEMENTS",
+    "R09-SYNTAX-VALIDATION",
+    "R10-ALLOWED-VERBS",
+    "R11-CORRECT-REFERENCES",
+    "R12-NO-COMMENTS",
+    "R13-VIEW-OPTIONAL",
+    "R14-STYLE-DEFINITIONS",
     "R15-DISTINCT-DESCRIPTIONS"
   ],
   "validation_groups": [
@@ -161,45 +171,54 @@
       "rules": [
         "R01-WORKSPACE-ONLY",
         "R02-MODEL-VIEWS",
-        "R07-VIEW-OPTIONAL"
+        "R04-LEVEL-ENFORCEMENT",
+        "R13-VIEW-OPTIONAL"
       ]
     },
     {
       "group": "Elements",
       "rules": [
         "R03-ELEMENT-DEFINED",
-        "R06-GROUP-REQUIRED",
-        "R04-ALLOWED-NAMES",
-        "R10-SIMPLE-TAG",
-        "R11-ALLOWED-ELEMENTS"
+        "R05-GROUP-REQUIRED",
+        "R06-ALLOWED-NAMES",
+        "R07-SIMPLE-TAG",
+        "R08-ALLOWED-ELEMENTS"
       ]
     },
     {
       "group": "Details",
       "rules": [
-        "R05-ALLOWED-VERBS",
-        "R09-CORRECT-REFERENCES",
-        "R08-NO-COMMENTS",
-        "R12-SYNTAX-VALIDATION",
+        "R10-ALLOWED-VERBS",
+        "R11-CORRECT-REFERENCES",
+        "R12-NO-COMMENTS",
+        "R09-SYNTAX-VALIDATION",
         "R15-DISTINCT-DESCRIPTIONS"
       ]
     },
     {
-      "group": "Styling and Formatting",
+      "group": "Styling",
       "rules": [
-        "R13-STYLE-DEFINITIONS",
-        "R14-FORMATTING"
+        "R14-STYLE-DEFINITIONS"
       ]
     }
   ],
   "example_mappings": [
     {
-      "description": "Una aplicación web que genera los xml de certificados y títulos al representante de su instituto privado. Se vincula con Amazon Rekognition para datos biométricos, Firebase para la base de datos y backend, el SAT para la firma electrónica y la SEP(MET/MEC) para los lineamientos de los certificados y títulos.",
+      "description": "Una aplicación web que genera los xml de certificados y títulos al representante de su instituto privado. Se vincula con Amazon Rekognition para datos biométricos, Firebase para la base de datos y backend, el SAT para la firma electrónica y la SEP(MET/MEC) para los lineamientos de los certificados y títulos. Realmente lo único que hace el SAT es darte tu firma electrónica. El usuario debería tener todos los archivos relacionados a esta y cargarlos en la aplicación para hacer válida la firma. No se envía nada al SAT.",
       "level": "systemContext",
-      "dsl": "workspace \"Certificados Digitales\" {\n    model {\n        representante = person \"Representante del Instituto\" {\n            description \"Encargado de generar certificados y títulos digitales\"\n            tags \"User\"\n        }\n        group \"Sistema Institucional\" {\n            app = softwareSystem \"CertificadosService\" {\n                description \"Sistema para generar certificados en XML\"\n                tags \"system\"\n            }\n        }\n        group \"Gobierno\" {\n            sat = softwareSystem \"SAT\" {\n                description \"Provee firma electrónica para certificados\"\n                tags \"external sat\"\n            }\n            sep = softwareSystem \"SEP (MET/MEC)\" {\n                description \"Define lineamientos para certificados\"\n                tags \"external sep\"\n            }\n        }\n        group \"Google\" {\n            firebase = softwareSystem \"Firebase\" {\n                description \"Gestiona autenticación y almacenamiento\"\n                tags \"external firebase\"\n            }\n        }\n        group \"Amazon\" {\n            rekognition = softwareSystem \"Amazon Rekognition\" {\n                description \"Verifica datos biométricos\"\n                tags \"external amazon\"\n            }\n        }\n        representante -> app \"Solicita certificados digitales\"\n        app -> sat \"Consulta firma electrónica\"\n        app -> sep \"Verifica lineamientos\"\n        app -> firebase \"Autentica y almacena datos\"\n        app -> rekognition \"Valida biometría\"\n    }\n    views {\n        systemContext app \"SystemContext\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"system\" { background #003366; color white; shape roundedbox }\n            element \"external\" { background #f2f2f2; color black; shape roundedbox }\n            element \"sat\" { background #666666; color white; shape roundedbox }\n            element \"sep\" { background #666666; color white; shape roundedbox }\n            element \"firebase\" { background #4285F4; color white; shape roundedbox }\n            element \"amazon\" { background #FF9900; color black; shape roundedbox }\n        }\n    }\n}"
+      "dsl": "workspace \"Certificados Digitales\" {\n    model {\n        representante = person \"Representante del Instituto\" {\n            description \"Encargado de generar certificados y títulos digitales\"\n            tags \"User\"\n        }\n        group \"Sistema Institucional\" {\n            app = softwareSystem \"CertificadosService\" {\n                description \"Sistema para generar certificados en XML\"\n                tags \"system\"\n            }\n        }\n        group \"Gobierno\" {\n            sat = softwareSystem \"SAT\" {\n                description \"Provee firma electrónica para certificados\"\n                tags \"external sat\"\n            }\n            sep = softwareSystem \"SEP (MET/MEC)\" {\n                description \"Define lineamientos para certificados\"\n                tags \"external sep\"\n            }\n        }\n        group \"Google\" {\n            firebase = softwareSystem \"Firebase\" {\n                description \"Gestiona autenticación y almacenamiento\"\n                tags \"external firebase\"\n            }\n        }\n        group \"Amazon\" {\n            rekognition = softwareSystem \"Amazon Rekognition\" {\n                description \"Verifica datos biométricos\"\n                tags \"external amazon\"\n            }\n        }\n        representante -> app \"Solicita certificados digitales\"\n        representante -> app \"Carga firma electrónica\"\n        app -> sep \"Verifica lineamientos\"\n        app -> firebase \"Autentica y almacena datos\"\n        app -> rekognition \"Valida biometría\"\n    }\n    views {\n        systemContext app \"SystemContext\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"system\" { background #003366; color white; shape roundedbox }\n            element \"external\" { background #f2f2f2; color black; shape roundedbox }\n            element \"sat\" { background #666666; color white; shape roundedbox }\n            element \"sep\" { background #666666; color white; shape roundedbox }\n            element \"firebase\" { background #4285F4; color white; shape roundedbox }\n            element \"amazon\" { background #FF9900; color black; shape roundedbox }\n        }\n    }\n}"
     }
   ],
   "known_issues": [
+    {
+      "issue": "Incorrect C4 level",
+      "description": "AI generated Component or Container diagram instead of System Context.",
+      "correction": "Enforce System Context level unless explicitly specified (R04).",
+      "example": {
+        "invalid": "app = softwareSystem \"App\" { ui = container \"UI\" { } }",
+        "corrected": "app = softwareSystem \"App\" { description \"App\"; tags \"system\" }"
+      }
+    },
     {
       "issue": "Redundant descriptions",
       "description": "AI used similar descriptions for elements and relationships.",
@@ -210,27 +229,27 @@
       }
     },
     {
-      "issue": "Incorrect grouping",
-      "description": "AI used generic group instead of provider-specific.",
-      "correction": "Use provider-specific groups per mapping_guidelines.groups (R06).",
-      "example": {
-        "invalid": "group \"Servicios Externos\" { sat = softwareSystem \"SAT\" { } }",
-        "corrected": "group \"Gobierno\" { sat = softwareSystem \"SAT\" { tags \"external sat\" } }"
-      }
-    },
-    {
       "issue": "Comments in DSL",
       "description": "AI included comments, causing potential parsing errors.",
-      "correction": "Remove all comments before generation (R08).",
+      "correction": "Remove all comments before generation (R12).",
       "example": {
         "invalid": "// Relaciones\napp -> db \"Consulta datos\"",
         "corrected": "app -> db \"Consulta datos\""
       }
+    },
+    {
+      "issue": "Incorrect external system interaction",
+      "description": "AI assumed direct interaction with SAT despite clarification.",
+      "correction": "Parse clarifications to adjust relationships, e.g., use 'carga' for user-provided SAT signatures (R10).",
+      "example": {
+        "invalid": "app -> sat \"Consulta firma electrónica\"",
+        "corrected": "representante -> app \"Carga firma electrónica\""
+      }
     }
   ],
   "generation_guidelines": {
-    "pre_validation": "Use systemContext template. Apply provider-specific groups and distinct descriptions per mapping_guidelines. Remove all comments (//, #, /*, */) before generation. Check known_issues.",
-    "post_validation": "Validate against rules in validation_order."
+    "pre_validation": "Use systemContext template unless description explicitly specifies another level. Apply provider-specific groups, distinct descriptions, and clarification parsing per mapping_guidelines. Remove all comments (//, #, /*, */) before generation. Check known_issues.",
+    "post_validation": "Validate against rules in validation_order, ensuring System Context level."
   },
   "rules": [
     {
@@ -304,53 +323,30 @@
       ]
     },
     {
-      "id": "R04-ALLOWED-NAMES",
-      "title": "Use allowed names",
-      "description": "Element names must use glossary terms.",
+      "id": "R04-LEVEL-ENFORCEMENT",
+      "title": "Enforce System Context level",
+      "description": "Only generate System Context diagrams unless explicitly specified.",
       "applies_to": [
-        "softwareSystem.name"
-      ],
-      "severity": "warning",
-      "validation": "automated",
-      "instruction": "Use terms from allowed_names (e.g., Service, Database) with identifier. Example: `CertificadosService`.",
-      "correction_strategy": "Replace forbidden names with closest glossary term (e.g., module → Service).",
-      "examples": [
-        {
-          "valid": true,
-          "dsl": "app = softwareSystem \"CertificadosService\" {\n    description \"App\"\n    tags \"system\"\n}"
-        },
-        {
-          "valid": false,
-          "dsl": "app = softwareSystem \"ModuleCertificados\" {\n    description \"App\"\n    tags \"system\"\n}",
-          "error": "Forbidden name: module"
-        }
-      ]
-    },
-    {
-      "id": "R05-ALLOWED-VERBS",
-      "title": "Use allowed verbs in relationships",
-      "description": "Relationships must use glossary verbs.",
-      "applies_to": [
-        "relationship"
+        "model"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use verbs from allowed_verbs in `SOURCE -> DESTINATION \"VERB DESCRIPTION\"`. Example: `app -> db \"Consulta datos\"`.",
-      "correction_strategy": "Replace invalid verbs with closest allowed verb per synonyms.",
+      "instruction": "Use only `person`, `softwareSystem`, `group`, and `->` relationships for System Context. Reject `container` or `component` unless description specifies Container or Component level. Example: `app = softwareSystem \"App\" { }`, not `app = softwareSystem \"App\" { ui = container \"UI\" { } }`.",
+      "correction_strategy": "Convert to System Context by replacing `container` or `component` with `softwareSystem`.",
       "examples": [
         {
           "valid": true,
-          "dsl": "app -> db \"Consulta datos\""
+          "dsl": "app = softwareSystem \"App\" { description \"App\"; tags \"system\" }"
         },
         {
           "valid": false,
-          "dsl": "app -> db \"Busca datos\"",
-          "error": "Invalid verb: Busca"
+          "dsl": "app = softwareSystem \"App\" { ui = container \"UI\" { description \"UI\"; tags \"container\" } }",
+          "error": "Invalid container in System Context diagram"
         }
       ]
     },
     {
-      "id": "R06-GROUP-REQUIRED",
+      "id": "R05-GROUP-REQUIRED",
       "title": "Required provider-specific grouping",
       "description": "Systems must be in provider-specific groups for external systems.",
       "applies_to": [
@@ -373,52 +369,122 @@
       ]
     },
     {
-      "id": "R07-VIEW-OPTIONAL",
-      "title": "Optional systemContext view",
-      "description": "Include systemContext view if specified, without semicolons.",
+      "id": "R06-ALLOWED-NAMES",
+      "title": "Use allowed names",
+      "description": "Element names must use glossary terms.",
       "applies_to": [
-        "views"
+        "softwareSystem.name"
       ],
       "severity": "warning",
       "validation": "automated",
-      "instruction": "Use `systemContext IDENTIFIER \"SystemContext\" { include *\n            autoLayout lr }` if description requires a context diagram, else omit. Example: `systemContext app \"SystemContext\" {\n    include *\n    autoLayout lr\n}`.",
-      "correction_strategy": "Add systemContext if specified, remove semicolons, omit if not needed.",
+      "instruction": "Use terms from allowed_names (e.g., Service, Database) with identifier. Example: `CertificadosService`.",
+      "correction_strategy": "Replace forbidden names with closest glossary term (e.g., module → Service).",
       "examples": [
         {
           "valid": true,
-          "dsl": "views { systemContext app \"SystemContext\" { include *\n            autoLayout lr } }"
+          "dsl": "app = softwareSystem \"CertificadosService\" {\n    description \"App\"\n    tags \"system\"\n}"
         },
         {
-          "valid": true,
-          "dsl": "views { styles { element \"Person\" { } } }"
+          "valid": false,
+          "dsl": "app = softwareSystem \"ModuleCertificados\" {\n    description \"App\"\n    tags \"system\"\n}",
+          "error": "Forbidden name: module"
         }
       ]
     },
     {
-      "id": "R08-NO-COMMENTS",
-      "title": "No comments",
-      "description": "DSL must not contain comments.",
+      "id": "R07-SIMPLE-TAG",
+      "title": "Use allowed tags",
+      "description": "Elements must use glossary tags.",
+      "applies_to": [
+        "element.tags"
+      ],
+      "severity": "warning",
+      "validation": "automated",
+      "instruction": "Use tags: User, system, external, sat, sep, firebase, amazon. Example: `tags \"external sat\"`.",
+      "correction_strategy": "Replace invalid tags with appropriate glossary tag.",
+      "examples": [
+        {
+          "valid": true,
+          "dsl": "app = softwareSystem \"App\" { description \"App\"; tags \"system\" }"
+        },
+        {
+          "valid": false,
+          "dsl": "app = softwareSystem \"App\" { description \"App\"; tags \"invalid\" }",
+          "error": "Invalid tag"
+        }
+      ]
+    },
+    {
+      "id": "R08-ALLOWED-ELEMENTS",
+      "title": "Use allowed elements",
+      "description": "Model can only contain person, softwareSystem, group, and relationships.",
+      "applies_to": [
+        "model"
+      ],
+      "severity": "error",
+      "validation": "automated",
+      "instruction": "Use `person`, `softwareSystem`, `group`, and `->` relationships. No `system`, `container`, or `component`.",
+      "correction_strategy": "Replace invalid elements with correct type (e.g., `container` → `softwareSystem`).",
+      "examples": [
+        {
+          "valid": true,
+          "dsl": "app = softwareSystem \"App\" { description \"App\"; tags \"system\" }"
+        },
+        {
+          "valid": false,
+          "dsl": "app = container \"App\" { description \"App\" }",
+          "error": "Invalid element: container"
+        }
+      ]
+    },
+    {
+      "id": "R09-SYNTAX-VALIDATION",
+      "title": "Ensure valid syntax",
+      "description": "DSL must have valid Structurizr syntax without semicolons.",
       "applies_to": [
         "dsl.syntax"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Remove `//`, `#`, `/*`, `*/` before generation. Example: ensure no `// Relaciones`.",
-      "correction_strategy": "Remove all detected comments.",
+      "instruction": "Ensure balanced braces, closed quotes, no invalid characters, no semicolons. Example: `systemContext app \"SystemContext\" { include *\n    autoLayout lr }`.",
+      "correction_strategy": "Fix braces, quotes, remove invalid characters and semicolons.",
       "examples": [
         {
           "valid": true,
-          "dsl": "workspace \"System\" { model { } }"
+          "dsl": "workspace \"System\" { model { app = softwareSystem \"App\" { description \"App\"; tags \"system\" } } views { systemContext app \"SystemContext\" { include *\n            autoLayout lr } } }"
         },
         {
           "valid": false,
-          "dsl": "// Relaciones\nworkspace \"System\" { }",
-          "error": "Comment detected"
+          "dsl": "views { systemContext app \"SystemContext\" { include *; autoLayout lr } }",
+          "error": "Semicolons in view definition"
         }
       ]
     },
     {
-      "id": "R09-CORRECT-REFERENCES",
+      "id": "R10-ALLOWED-VERBS",
+      "title": "Use allowed verbs in relationships",
+      "description": "Relationships must use glossary verbs.",
+      "applies_to": [
+        "relationship"
+      ],
+      "severity": "error",
+      "validation": "automated",
+      "instruction": "Use verbs from allowed_verbs in `SOURCE -> DESTINATION \"VERB DESCRIPTION\"`. Example: `app -> db \"Consulta datos\"`. Parse clarifications to adjust verbs (e.g., 'carga' for SAT signatures).",
+      "correction_strategy": "Replace invalid verbs with closest allowed verb per synonyms or clarifications.",
+      "examples": [
+        {
+          "valid": true,
+          "dsl": "app -> db \"Consulta datos\""
+        },
+        {
+          "valid": false,
+          "dsl": "app -> sat \"Accede firma\"",
+          "error": "Invalid verb: Accede"
+        }
+      ]
+    },
+    {
+      "id": "R11-CORRECT-REFERENCES",
       "title": "Use exact identifiers",
       "description": "References in relationships and views must match defined identifiers.",
       "applies_to": [
@@ -442,76 +508,52 @@
       ]
     },
     {
-      "id": "R10-SIMPLE-TAG",
-      "title": "Use allowed tags",
-      "description": "Elements must use glossary tags.",
-      "applies_to": [
-        "element.tags"
-      ],
-      "severity": "warning",
-      "validation": "automated",
-      "instruction": "Use tags: User, system, external, sat, sep, firebase, amazon. Example: `tags \"external sat\"`.",
-      "correction_strategy": "Replace invalid tags with appropriate glossary tag.",
-      "examples": [
-        {
-          "valid": true,
-          "dsl": "app = softwareSystem \"App\" { description \"App\"; tags \"system\" }"
-        },
-        {
-          "valid": false,
-          "dsl": "app = softwareSystem \"App\" { description \"App\"; tags \"invalid\" }",
-          "error": "Invalid tag"
-        }
-      ]
-    },
-    {
-      "id": "R11-ALLOWED-ELEMENTS",
-      "title": "Use allowed elements",
-      "description": "Model can only contain person, softwareSystem, group, and relationships.",
-      "applies_to": [
-        "model"
-      ],
-      "severity": "error",
-      "validation": "automated",
-      "instruction": "Use `person`, `softwareSystem`, `group`, and `->` relationships. No `system` or `relationship`.",
-      "correction_strategy": "Replace invalid elements with correct type.",
-      "examples": [
-        {
-          "valid": true,
-          "dsl": "app = softwareSystem \"App\" { description \"App\"; tags \"system\" }"
-        },
-        {
-          "valid": false,
-          "dsl": "app = system \"App\" { description \"App\" }",
-          "error": "Invalid element: system"
-        }
-      ]
-    },
-    {
-      "id": "R12-SYNTAX-VALIDATION",
-      "title": "Ensure valid syntax",
-      "description": "DSL must have valid Structurizr syntax without semicolons.",
+      "id": "R12-NO-COMMENTS",
+      "title": "No comments",
+      "description": "DSL must not contain comments.",
       "applies_to": [
         "dsl.syntax"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Ensure balanced braces, closed quotes, no invalid characters, no semicolons. Example: `systemContext app \"SystemContext\" { include *\n    autoLayout lr }`.",
-      "correction_strategy": "Fix braces, quotes, remove invalid characters and semicolons.",
+      "instruction": "Remove `//`, `#`, `/*`, `*/` before generation. Example: ensure no `// Relaciones`.",
+      "correction_strategy": "Remove all detected comments.",
       "examples": [
         {
           "valid": true,
-          "dsl": "workspace \"System\" { model { app = softwareSystem \"App\" { description \"App\"; tags \"system\" } } views { systemContext app \"SystemContext\" { include *\n            autoLayout lr } } }"
+          "dsl": "workspace \"System\" { model { } }"
         },
         {
           "valid": false,
-          "dsl": "views { systemContext app \"SystemContext\" { include *; autoLayout lr } }",
-          "error": "Semicolons in view definition"
+          "dsl": "// Relaciones\nworkspace \"System\" { }",
+          "error": "Comment detected"
         }
       ]
     },
     {
-      "id": "R13-STYLE-DEFINITIONS",
+      "id": "R13-VIEW-OPTIONAL",
+      "title": "Optional systemContext view",
+      "description": "Include systemContext view if specified, without semicolons.",
+      "applies_to": [
+        "views"
+      ],
+      "severity": "warning",
+      "validation": "automated",
+      "instruction": "Use `systemContext IDENTIFIER \"SystemContext\" { include *\n            autoLayout lr }` if description requires a context diagram, else omit. Example: `systemContext app \"SystemContext\" {\n    include *\n    autoLayout lr\n}`.",
+      "correction_strategy": "Add systemContext if specified, remove semicolons, omit if not needed.",
+      "examples": [
+        {
+          "valid": true,
+          "dsl": "views { systemContext app \"SystemContext\" { include *\n            autoLayout lr } }"
+        },
+        {
+          "valid": true,
+          "dsl": "views { styles { element \"Person\" { } } }"
+        }
+      ]
+    },
+    {
+      "id": "R14-STYLE-DEFINITIONS",
       "title": "Include style definitions",
       "description": "Views must include styles for all relevant tags.",
       "applies_to": [
@@ -530,29 +572,6 @@
           "valid": false,
           "dsl": "views { styles { } }",
           "error": "Missing required styles"
-        }
-      ]
-    },
-    {
-      "id": "R14-FORMATTING",
-      "title": "Consistent formatting",
-      "description": "DSL must use consistent formatting with multi-line properties.",
-      "applies_to": [
-        "dsl.syntax"
-      ],
-      "severity": "warning",
-      "validation": "automated",
-      "instruction": "Use 4-space indentation, separate properties on individual lines, no semicolons. Example: `app = softwareSystem \"App\" {\n    description \"App\"\n    tags \"system\"\n}`.",
-      "correction_strategy": "Reformat with 4-space indentation, separate properties, remove semicolons.",
-      "examples": [
-        {
-          "valid": true,
-          "dsl": "app = softwareSystem \"App\" {\n    description \"App\"\n    tags \"system\"\n}"
-        },
-        {
-          "valid": false,
-          "dsl": "app = softwareSystem \"App\" { description \"App\"; tags \"system\" }",
-          "error": "Semicolons detected"
         }
       ]
     },
