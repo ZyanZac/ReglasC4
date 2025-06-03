@@ -251,8 +251,8 @@
         "integra|conecta|integrates|links": "integra"
       },
       "clarifications": {
-        "sat|no se envía|user-provided": "Mandatory: Use 'carga' for user-provided signature files, no direct system-to-SAT interaction (e.g., 'representante -> component \"Carga firma electrónica\"').",
-        "firebase|backend|logic": "Mandatory: Map to container with components for backend logic (e.g., 'backend = container \"Backend\" { logic = component \"Logic\" }'), using 'almacena' or 'procesa' for interactions.",
+        "sat|no se envía|user-provided": "Mandatory: Use 'carga' for user-provided signature files, no direct system-to-SAT interaction (e.g., 'representante -> app \"Carga firma electrónica\"' in System Context, 'representante -> component \"Carga firma electrónica\"' in Component).",
+        "firebase|backend|logic": "Mandatory: Map to container with components for backend logic in Container/Component diagrams (e.g., 'backend = container \"Backend\" { logic = component \"Logic\" }'), using 'almacena' or 'procesa' for interactions. In System Context, use 'procesa' or 'almacena' for relationships (e.g., 'app -> Firebase \"Procesa lógica de negocio\"').",
         "no interaction|no data sent": "Map to user-driven action (e.g., 'carga') or internal app processing.",
         "any|user action": "Map to user-driven verbs like 'solicita', 'carga'."
       },
@@ -413,11 +413,11 @@
       }
     },
     {
-      "issue": "Incomplete grouping",
-      "description": "AI omitted provider-specific groups for external systems.",
-      "correction": "Enforce groups for all external systems (R05).",
+      "issue": "Incorrect grouping",
+      "description": "AI grouped external systems generically (e.g., 'Proveedores Externos') instead of provider-specific groups.",
+      "correction": "Enforce provider-specific groups for all levels (R05).",
       "example": {
-        "invalid": "amazon = softwareSystem \"AmazonRekognition\" { }",
+        "invalid": "group \"Proveedores Externos\" { amazon = softwareSystem \"AmazonRekognition\" { } }",
         "corrected": "group \"Amazon\" { amazon = softwareSystem \"AmazonRekognition\" { } }"
       }
     },
@@ -429,11 +429,20 @@
         "invalid": "mobile = container \"App\" { technology \"Unknown\" }",
         "corrected": "mobile = container \"MobileApp\" { technology \"NativeScript\"; tags \"container mobile\" }"
       }
+    },
+    {
+      "issue": "Invalid view syntax",
+      "description": "AI generated incorrect view titles (e.g., 'Diagrama de Contexto') or malformed view blocks.",
+      "correction": "Enforce exact fixed_template titles (e.g., 'SystemContext') and formatting (R13, R09).",
+      "example": {
+        "invalid": "views { systemContext CertificadosApp \"Diagrama de Contexto\" { include *; autoLayout lr } }",
+        "corrected": "views { systemContext CertificadosApp \"SystemContext\" { include *\n    autoLayout lr } }"
+      }
     }
   ],
   "generation_guidelines": {
-    "pre_validation": "Generate output strictly as Structurizr DSL, using fixed_template and example_mappings. Determine C4 level from description using level_detection, requiring explicit level specification. Apply provider-specific groups for all levels, distinct descriptions, and mandatory clarification parsing. Remove all comments (//, #, /*, */) before generation. Place relationships within model block. Use dynamic_mapping for unlisted terms. For Component diagrams, ensure components are defined within a single container. Check known_issues.",
-    "post_validation": "Validate against rules in validation_order, ensuring correct C4 level, Structurizr DSL syntax, and description adherence."
+    "pre_validation": "Generate output strictly as Structurizr DSL, using fixed_template and example_mappings. Determine C4 level from description using level_detection, requiring explicit level specification. Apply provider-specific groups for all levels, distinct descriptions, and mandatory clarification parsing. Remove all comments (//, #, /*, */) before generation. Place relationships within model block. Use dynamic_mapping for unlisted terms. For Component diagrams, ensure components are defined within a single container. For views, use exact fixed_template titles (e.g., 'SystemContext' for systemContext views) and formatting, rejecting prompt-derived titles (e.g., 'Diagrama de Contexto'). Check known_issues.",
+    "post_validation": "Validate against rules in validation_order, ensuring correct C4 level, Structurizr DSL syntax, exact view titles, and description adherence."
   },
   "rules": [
     {
@@ -534,18 +543,23 @@
     {
       "id": "R05-GROUP-REQUIRED",
       "title": "Required provider-specific grouping",
-      "description": "External systems in System Context must be in provider-specific groups.",
+      "description": "External systems must be in provider-specific groups for all C4 levels, avoiding generic grouping.",
       "applies_to": [
         "softwareSystem"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use `group \"NAME\" { }` for principal and provider-specific external systems (e.g., 'Gobierno' for SAT). Example: `group \"Gobierno\" { sat = softwareSystem \"SAT\" { } }`.",
-      "correction_strategy": "Move ungrouped external systems to provider-specific groups per mapping_guidelines.groups.",
+      "instruction": "Use `group \"NAME\" { }` for external systems in System Context, Container, and Component diagrams, matching mapping_guidelines.groups (e.g., 'Gobierno' for SAT/SEP, 'Google' for Firebase, 'Amazon' for Rekognition). Reject generic groups like 'Proveedores Externos'. Example: `group \"Gobierno\" { sat = softwareSystem \"SAT\" { } }`.",
+      "correction_strategy": "Move ungrouped or generically grouped external systems to provider-specific groups per mapping_guidelines.groups or fallback 'Servicios Externos' only if no provider is identified.",
       "examples": [
         {
           "valid": true,
           "dsl": "group \"Gobierno\" { sat = softwareSystem \"SAT\" { description \"SAT\"; tags \"external sat\" } }"
+        },
+        {
+          "valid": false,
+          "dsl": "group \"Proveedores Externos\" { sat = softwareSystem \"SAT\" { description \"SAT\"; tags \"external sat\" } }",
+          "error": "Generic group 'Proveedores Externos' not allowed; use provider-specific group"
         },
         {
           "valid": false,
@@ -637,23 +651,28 @@
     {
       "id": "R09-SYNTAX-VALIDATION",
       "title": "Ensure valid syntax",
-      "description": "DSL must have valid Structurizr syntax without semicolons, with relationships in model block and correct view definitions.",
+      "description": "DSL must have valid Structurizr syntax without semicolons, with relationships in model block, correct view definitions, and exact formatting.",
       "applies_to": [
         "dsl.syntax"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Ensure balanced braces, closed quotes, no invalid characters, no semicolons, relationships within `model`, and valid view syntax (e.g., `component CONTAINER \"Components\" { include *\n    autoLayout lr }`). Example: `workspace { model { user -> app \"Action\" } views { component backend \"Components\" { include *\n    autoLayout lr } } }`.",
-      "correction_strategy": "Fix braces, quotes, remove invalid characters/semicolons, move relationships to model block, correct view syntax (e.g., replace invalid `component appMovil` with `component CONTAINER`).",
+      "instruction": "Ensure balanced braces, closed quotes, no invalid characters, no semicolons, relationships within `model`, and valid view syntax exactly matching fixed_template (e.g., `systemContext IDENTIFIER \"SystemContext\" { include *\n    autoLayout lr }`). Validate indentation and reject malformed view blocks, including incorrect titles or formatting. Example: `workspace { model { user -> app \"Action\" } views { systemContext app \"SystemContext\" { include *\n    autoLayout lr } } }`.",
+      "correction_strategy": "Fix braces, quotes, remove invalid characters/semicolons, move relationships to model block, correct view syntax to match fixed_template (e.g., replace `systemContext IDENTIFIER \"Diagrama de Contexto\"` with `systemContext IDENTIFIER \"SystemContext\"`, ensure proper indentation).",
       "examples": [
         {
           "valid": true,
-          "dsl": "workspace \"System\" { model { app = softwareSystem \"App\" { description \"App\"; tags \"system\" } user -> app \"Consulta datos\" } views { component backend \"Components\" { include *\n    autoLayout lr } } }"
+          "dsl": "workspace \"System\" { model { app = softwareSystem \"App\" { description \"App\"; tags \"system\" } user -> app \"Consulta datos\" } views { systemContext app \"SystemContext\" { include *\n    autoLayout lr } } }"
         },
         {
           "valid": false,
-          "dsl": "workspace { model { } views { component appMovil \"Components\" { include *; autoLayout lr } } }",
-          "error": "Invalid component view syntax"
+          "dsl": "workspace { model { } views { systemContext CertificadosApp \"Diagrama de Contexto\" { include *; autoLayout lr } } }",
+          "error": "Invalid systemContext view: incorrect title 'Diagrama de Contexto' or semicolon"
+        },
+        {
+          "valid": false,
+          "dsl": "workspace { model { } views { systemContext CertificadosApp \"SystemContext\" { include * autoLayout lr } } }",
+          "error": "Invalid systemContext view: incorrect indentation"
         }
       ]
     },
@@ -666,8 +685,8 @@
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use verbs from allowed_verbs in `SOURCE -> DESTINATION \"VERB DESCRIPTION\"`, enforcing clarifications (e.g., SAT → 'carga', Firebase backend → 'almacena'/'procesa'). Example: `app -> db \"Consulta datos\"`, `user -> app \"Carga firma electrónica\"` for SAT. Description must start with verb.",
-      "correction_strategy": "Replace invalid verbs with closest allowed verb per synonyms or clarifications (e.g., 'accede' → 'carga' for SAT).",
+      "instruction": "Use verbs from allowed_verbs in `SOURCE -> DESTINATION \"VERB DESCRIPTION\"`, mandatorily enforcing clarifications (e.g., SAT → 'carga', Firebase backend → 'almacena'/'procesa'). In Component diagrams, relationships should involve components within a container or user-to-component actions. Example: `app -> db \"Consulta datos\"`, `user -> app \"Carga firma electrónica\"` for SAT. Description must start with verb.",
+      "correction_strategy": "Replace invalid verbs with closest allowed verb per synonyms or clarifications (e.g., 'utiliza' → 'carga' for SAT). Ensure clarification-driven verbs are prioritized (e.g., SAT interactions must use 'carga').",
       "examples": [
         {
           "valid": true,
@@ -679,8 +698,8 @@
         },
         {
           "valid": false,
-          "dsl": "app -> sat \"Accede firma\"",
-          "error": "Invalid verb: Accede, violates SAT clarification"
+          "dsl": "app -> sat \"Utiliza archivos .cer y .key\"",
+          "error": "Invalid verb: Utiliza, violates SAT clarification"
         }
       ]
     },
@@ -717,7 +736,7 @@
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Remove `//`, `#`, `/*`, `*/` before generation. Example: ensure no `// Sistema principal`.",
+      "instruction": "Remove `//`, `#`, `/*`, `*/` before generation. Example: ensure no `// Sistemas externos`. Enforce pre-generation comment stripping.",
       "correction_strategy": "Remove all detected comments.",
       "examples": [
         {
@@ -726,7 +745,7 @@
         },
         {
           "valid": false,
-          "dsl": "// Sistema principal\nworkspace \"System\" { }",
+          "dsl": "// Sistemas externos\nworkspace \"System\" { }",
           "error": "Comment detected"
         }
       ]
@@ -734,27 +753,32 @@
     {
       "id": "R13-VIEW-OPTIONAL",
       "title": "Optional view for level",
-      "description": "Include view matching specified C4 level, with correct container identifier for component views, without semicolons.",
+      "description": "Include view matching specified C4 level, with correct container identifier for component views, exact fixed_template title and formatting, without semicolons.",
       "applies_to": [
         "views"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use `systemContext IDENTIFIER \"SystemContext\"` for System Context, `container IDENTIFIER \"Containers\"` for Containers, `component CONTAINER_ID \"Components\"` for Components, with `include *; autoLayout lr`. Omit if not specified. Example: `component backend \"Components\" {\n    include *\n    autoLayout lr\n}`.",
-      "correction_strategy": "Add missing view based on C4 level, correct component view to use container identifier (e.g., replace `component appMovil` with `component CONTAINER`), remove semicolons.",
+      "instruction": "Use `systemContext IDENTIFIER \"SystemContext\"` for System Context, `container IDENTIFIER \"Containers\"` for Containers, `component CONTAINER_ID \"Components\"` for Components, exactly as in fixed_template, with `include *\n    autoLayout lr`. Enforce exact title (e.g., 'SystemContext', not 'Diagrama de Contexto') and correct indentation. Omit if not specified. Example: `systemContext app \"SystemContext\" {\n    include *\n    autoLayout lr\n}`.",
+      "correction_strategy": "Add missing view based on C4 level, correct view syntax to match fixed_template (e.g., replace `systemContext IDENTIFIER \"Diagrama de Contexto\"` with `systemContext IDENTIFIER \"SystemContext\"`, fix indentation, use container identifier for component views), remove semicolons.",
       "examples": [
+        {
+          "valid": true,
+          "dsl": "views { systemContext app \"SystemContext\" { include *\n    autoLayout lr } }"
+        },
         {
           "valid": true,
           "dsl": "views { component backend \"Components\" { include *\n    autoLayout lr } }"
         },
         {
-          "valid": true,
-          "dsl": "views { styles { element \"Person\" { } } }"
+          "valid": false,
+          "dsl": "views { systemContext CertificadosApp \"Diagrama de Contexto\" { include *; autoLayout lr } }",
+          "error": "Invalid systemContext view: incorrect title 'Diagrama de Contexto' or semicolon"
         },
         {
           "valid": false,
-          "dsl": "views { component appMovil \"Components\" { include *; autoLayout lr } }",
-          "error": "Invalid component view: must use container identifier"
+          "dsl": "views { systemContext CertificadosApp \"SystemContext\" { include * autoLayout lr } }",
+          "error": "Invalid systemContext view: incorrect indentation"
         }
       ]
     },
@@ -795,8 +819,8 @@
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Ensure relationship descriptions start with an allowed verb, differ significantly from element descriptions, and are concise. In Component diagrams, relationships should describe specific component actions. Example: element `Sistema para certificados`, relationship `Solicita certificados`. Avoid repeating system purpose (e.g., 'generar certificados').",
-      "correction_strategy": "Modify relationship description to use a distinct, concise verb or phrase (e.g., 'Solicita certificados digitales y verifica estatus de los trámites' → 'Solicita certificados').",
+      "instruction": "Ensure relationship descriptions start with an allowed verb, differ significantly from element descriptions, and are concise. Avoid repeating system/container purpose (e.g., 'generación de certificados'). In Component diagrams, relationships should describe specific component actions. Example: element `Sistema para certificados`, relationship `Solicita certificados`.",
+      "correction_strategy": "Modify relationship description to use a distinct, concise verb or phrase (e.g., 'Solicita generación de certificados y títulos digitales' → 'Solicita certificados').",
       "examples": [
         {
           "valid": true,
@@ -804,7 +828,7 @@
         },
         {
           "valid": false,
-          "dsl": "app = softwareSystem \"App\" { description \"Genera certificados\"; tags \"system\" } user -> app \"Solicita certificados digitales y verifica estatus de los trámites\"",
+          "dsl": "app = softwareSystem \"App\" { description \"Genera certificados\"; tags \"system\" } user -> app \"Solicita generación de certificados y títulos digitales\"",
           "error": "Relationship description redundant with element description"
         }
       ]
