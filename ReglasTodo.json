@@ -432,8 +432,8 @@
     }
   ],
   "generation_guidelines": {
-    "pre_validation": "Determine C4 level from description using level_detection, requiring explicit level specification. Apply provider-specific groups, distinct descriptions, and clarification parsing. Remove all comments (//, #, /*, */) before generation. Place relationships within model block. Use dynamic_mapping for unlisted terms. Check known_issues.",
-    "post_validation": "Validate against rules in validation_order, ensuring correct C4 level, syntax, and description adherence."
+    "pre_validation": "Generate output strictly as Structurizr DSL, using fixed_template and example_mappings. Determine C4 level from description using level_detection, requiring explicit level specification. Apply provider-specific groups for all levels, distinct descriptions, and mandatory clarification parsing. Remove all comments (//, #, /*, */) before generation. Place relationships within model block. Use dynamic_mapping for unlisted terms. For Component diagrams, ensure components are defined within a single container. Check known_issues.",
+    "post_validation": "Validate against rules in validation_order, ensuring correct C4 level, Structurizr DSL syntax, and description adherence."
   },
   "rules": [
     {
@@ -788,15 +788,15 @@
     {
       "id": "R15-DISTINCT-DESCRIPTIONS",
       "title": "Distinct element and relationship descriptions",
-      "description": "Relationship descriptions must be distinct from element descriptions, use concise action-oriented verbs, and avoid redundancy with system purpose.",
+      "description": "Relationship descriptions must be distinct from element descriptions, use concise action-oriented verbs, and avoid redundancy with system/container purpose.",
       "applies_to": [
         "element.description",
         "relationship.description"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Ensure relationship descriptions start with an allowed verb, differ significantly from element descriptions, and are concise. Example: element `Sistema para certificados`, relationship `Solicita certificados`. Avoid repeating system purpose (e.g., 'generar certificados').",
-      "correction_strategy": "Modify relationship description to use a distinct, concise verb or phrase (e.g., 'Usa la aplicación para generar certificados' → 'Solicita certificados').",
+      "instruction": "Ensure relationship descriptions start with an allowed verb, differ significantly from element descriptions, and are concise. In Component diagrams, relationships should describe specific component actions. Example: element `Sistema para certificados`, relationship `Solicita certificados`. Avoid repeating system purpose (e.g., 'generar certificados').",
+      "correction_strategy": "Modify relationship description to use a distinct, concise verb or phrase (e.g., 'Solicita certificados digitales y verifica estatus de los trámites' → 'Solicita certificados').",
       "examples": [
         {
           "valid": true,
@@ -804,7 +804,7 @@
         },
         {
           "valid": false,
-          "dsl": "app = softwareSystem \"App\" { description \"Genera certificados\"; tags \"system\" } user -> app \"Usa la aplicación para generar certificados\"",
+          "dsl": "app = softwareSystem \"App\" { description \"Genera certificados\"; tags \"system\" } user -> app \"Solicita certificados digitales y verifica estatus de los trámites\"",
           "error": "Relationship description redundant with element description"
         }
       ]
