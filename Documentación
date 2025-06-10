@@ -1,0 +1,271 @@
+Documentación Oficial - CERTISEP
+1.	Resumen Ejecutivo
+CERTISEP es una plataforma digital que permite a universidades privadas con RVOE Federal generar y firmar electrónicamente certificados y títulos electrónicos de manera segura, eficiente y conforme a las normativas de la Secretaría de Educación Pública (SEP). Simplifica un proceso tradicionalmente manual, reduciendo errores y ahorrando tiempo.
+2.	El Problema que Resuelve
+Situación Actual de las Universidades Privadas
+Las instituciones con Reconocimiento de Validez Oficial de Estudios (RVOE) Federal deben:
+•	Generar certificados y títulos en formato XML que cumplan con las especificaciones técnicas de la SEP.
+•	Firmar electrónicamente estos documentos los certificados y títulos.
+•	Validar la identidad del firmante mediante datos biométricos.
+Desventajas de no utilizar CERTISEP
+•	Complejidad: Crear XML manualmente requiere conocimientos técnicos avanzados.
+•	Errores costosos: Un formato incorrecto provoca rechazos por parte de la SEP.
+•	Falta de seguridad: Es difícil garantizar que la persona autorizada sea quien firme los documentos.
+•	Desactualización: Las normativas de la SEP cambian frecuentemente, dificultando el cumplimiento constante en la generación de documentos.
+•	Ineficiencia: Firmar documentos uno por uno consume recursos.
+
+3.	Propuesta de Valor
+Para las Universidades
+•	Simplificación total: Llenar una plantilla Excel y subirla para generar XML automáticamente.
+•	Cumplimiento garantizado: Documentos siempre alineados con las últimas normativas de la SEP.
+•	Seguridad: Asegura la identidad de la persona firmante.
+•	Eficiencia: Firma hasta 400 documentos en una sola sesión.
+•	Sin infraestructura: Todo en la nube, sin necesidad de servidores propios.
+•	Acceso 24/7: Documentos disponibles en cualquier momento y lugar.
+•	Documentos válidos: Certificados y títulos reconocidos oficialmente.
+•	Rapidez: Generación instantánea tras completar los requisitos.
+•	Verificación digital: Firmas electrónicas seguras y verificables.
+
+4.	Modelo de Negocio
+Mercado Objetivo
+•	Clientes: Instituciones privadas de educación superior con RVOE Federal en México.
+•	Razón: Solo estas instituciones están obligadas a generar certificados y títulos digitales conforme a las normativas de la SEP.
+Modelo de Ingresos
+CERTISEP opera como Software as a Service (SaaS) con dos modalidades:
+1.	Membresía Anual (Documentos Ilimitados):
+o	1-3 RVOE: plan básico $15,000. Plan plus $25,000 MXN anuales.
+o	4-10 RVOE: plan básico $35,000. Plan plus $55,000 MXN anuales.
+o	11-20 RVOE: plan básico $50,000. Plan plus $75,000 MXN anuales.
+2.	Pago por Documento:
+o	$500 MXN + IVA por certificado o título generado (incluye XML y cadena original).
+Condiciones Comerciales
+•	Descuentos: Disponibles para instituciones con más de 20 RVOE.
+•	Facturación: Anual, con aviso 30 días antes. Para pago por documento, factura mensual emitida en los primeros 5-7 días.
+•	Cancelación: El servicio se desactiva un mes después del vencimiento si no se renueva.
+
+5.	¿Cómo Funciona? (Proceso de Negocio)
+Proceso Simplificado
+1.	Registro: La universidad configura su cuenta en CERTISEP.
+2.	Preparación: Descarga una plantilla Excel personalizada para su institución.
+3.	Captura: Llena la plantilla con datos de los estudiantes.
+4.	Generación: Sube la plantilla y CERTISEP genera los XML automáticamente.
+5.	Empaquetado: Agrupa los XML en paquetes para firma masiva.
+6.	Validación: El usuario autorizado verifica su identidad con una foto biométrica.
+7.	Firma: Firma electrónicamente los documentos desde la app móvil.
+8.	Entrega: Los documentos oficiales están listos para descarga o entrega.
+Diagrama de Flujo (Descripción Textual)
+Un diagrama de flujo podría representarse así:
+•	Inicio: Universidad se registra → Descarga plantilla Excel.
+•	Flujo Operativo: Usuario operativo llena plantilla → Sube a CERTISEP → Genera XML → Crea paquetes.
+•	Flujo Administrativo: Notifica al usuario administrativo → Valida identidad (Rekognition) → Firma (app móvil, .CER/.KEY) → Descarga documentos.
+•	Fin: Documentos disponibles en la nube.
+Roles en el Proceso
+•	Usuario Operativo (Control Escolar):
+o	Gestiona plantillas Excel.
+o	Genera y administra XML.
+o	Prepara paquetes para firma.
+o	Monitorea el proceso desde la web.
+•	Usuario Administrativo (Directivo Autorizado):
+o	Firma electrónicamente documentos.
+o	Valida su identidad con reconocimiento facial.
+o	Usa la app móvil para firmar hasta 400 documentos por sesión.
+
+6.	Cumplimiento Regulatorio y Legal
+Organismos Reguladores
+•	SEP (Secretaría de Educación Pública):
+o	MET: Módulo Electrónico de Titulación.
+o	MEC: Módulo Electrónico de Certificación.
+o	MET y MEC tienen requisitos distintos y se manejan por separado.
+•	SAT (Servicio de Administración Tributaria):
+o	Proporciona certificados de sello digital (.CER y .KEY) para firmas electrónicas.
+o	Asegura cumplimiento con estándares criptográficos.
+Validaciones de Seguridad
+•	Validación Biométrica: Amazon Rekognition captura una foto del firmante para verificar su identidad en cada firma.
+•	Firma Electrónica: Compatible con certificados X.509 V2 y V3 (estándar oficial para firmas seguras).
+•	Trazabilidad: Registro de quién, cuándo y desde dónde se firmó cada documento.
+Proceso de Firma Electrónica
+•	Archivos requeridos: .CER (certificado público) y .KEY (clave privada), almacenados previamente en el dispositivo móvil del usuario.
+•	Desencriptación: La app móvil utiliza un proceso seguro para desencriptar el archivo .KEY con una contraseña proporcionada por el usuario, siguiendo los lineamientos del SAT.
+Manejo de RVOE
+•	Si una institución pierde su RVOE, el servicio permanece activo, pero los títulos firmados serán rechazados automáticamente por la SEP.
+•	La institución decide si renueva su RVOE para continuar.
+
+7.	Información de Documentos
+Tipos de Documentos
+•	Certificados (Estudios Parciales):
+o	Requieren una sola firma.
+o	Incluyen materias cursadas, calificaciones, ciclos escolares, y datos de la institución.
+•	Títulos (Estudios Completos):
+o	Requieren hasta dos firmas.
+o	Incluyen datos de examen profesional, servicio social, modalidad de titulación, y antecedentes académicos.
+Información Requerida
+Para Certificados:
+•	Matrícula, nombre, apellidos, género, CURP, fecha de nacimiento.
+•	Tipo de periodo cursado, tipo de certificado, campus, entidad de expedición, fecha de expedición.
+•	Asignaturas asignadas, asignaturas cursadas, calificaciones por materia, ciclos escolares, forma de aprobación y responsable.
+Para Títulos:
+•	Matrícula, nombre, apellidos, email, CURP.
+•	Servicio social, entidad de expedición, fechas de examen profesional y fecha de expedición.
+•	Fecha de inicio y término, fundamento legal de servicio social.
+•	Modalidad de titulación, carrera, RVOE, estudio antecedente, escuela antecedente y cédula antecedente.
+•	Entidad antecedente, fecha de término de antecedente y responsable 1.
+Capacidades
+•	Generación: Instantánea para documentos totales o parciales.
+•	Cantidad: Sin límite en planes anuales; hasta 400 documentos por sesión (limitación técnica).
+•	Plantillas: Hasta 250 estudiantes por archivo Excel (estimado).
+
+8.	Validaciones del Sistema
+Validaciones Actuales para Títulos
+Validaciones de Campo:
+•	Matrícula: No acepta "/" - no arroja error.
+•	Matrícula no repetida: Mensaje preventivo.
+•	Email: Email no válido - mensaje de error.
+•	CURP: Mensaje preventivo.
+•	CURP EXTRANJERO: Se acepta la palabra "EXTRANJERO".
+Validaciones de Fecha:
+•	Formato fecha: Error - "Element '{https://www.siged.sep.gob.mx/titulos/}Expedicion', attribute 'fechaExencionExamenProfesional': 'Invalid date' is not a valid value of the atomic type 'xs:date'."
+Validaciones de Cédula y Campos Específicos:
+•	Cédula antecedente (10 dígitos): Error - "El número de cédula del antecedente debe tener menos de 10 caracteres".
+•	Carrera y RVOE: Error - "debe seleccionar un rvoe (opciones válidas [x])".
+Validaciones Actuales para Certificados
+Validaciones de Campo:
+•	Matrícula: No acepta "/" - no arroja error.
+•	Matrícula no repetida: Mensaje preventivo.
+•	Email: Email no válido - mensaje de error.
+•	CURP: Mensaje preventivo.
+Validaciones de Fecha:
+•	Validación fecha expedición: "La fecha de expedición no puede ser mayor a 90 días del día actual. Es motivo de rechazo por la SEP autenticar un certificado con más de 90 días pasados con referencia a la fecha en que se sube al MEC."
+•	Formato fecha: Error - "Element '{https://www.siged.sep.gob.mx/titulos/}Expedicion', attribute 'fechaExencionExamenProfesional': 'Invalid date' is not a valid value of the atomic type 'xs:date'."
+Validaciones Académicas:
+•	Cédula antecedente (10 dígitos): Error - "El número de cédula del antecedente debe tener menos de 10 caracteres".
+•	Calificación: Error - "La calificación de la asignatura [nombre] es incorrecta debe estar entre 6.00 y 10".
+•	Ciclo escolar: Formato requerido "2019-1" (requiere modificación del mensaje de error).
+•	Asignaturas Complementarias (ID 266): NO se deben contabilizar en el atributo "asignadas" para la generación del certificado electrónico (XML). Estas materias NO se consideran para obtener promedio, créditos y total de asignaturas.
+Validaciones de Revalidación:
+•	Asignaturas con revalidación o equivalencia: El ciclo se captura año-ciclo en el que se haga efectiva la revalidación o equivalencia.
+Validaciones Propuestas para Títulos
+Validaciones de Fecha Mejoradas:
+•	Validación fecha expedición: No puede ser igual al día de hoy, ni posterior.
+•	Validación fecha examen profesional: Debe ser anterior a la fecha de expedición, pero posterior a la fecha de término.
+•	Validación fecha inicio: La fecha indicada debe ser anterior a la fecha de término general, pero no puede anteceder a la fecha de término del antecedente.
+Validaciones de Campo Mejoradas:
+•	Cambiar error de fechas: Mejorar mensaje del error de formato de fecha XML.
+•	Validación cédula antecedente: En caso de ser título de maestría no debería permitir continuar si no incluye cédula antecedente.
+•	Validación servicio social: Solo aplicaría en título de licenciatura.
+•	CURP EXTRANJERO: La entidad antecedente debe ser "33 extranjero".
+Funcionalidades de Gestión:
+•	Permitir eliminaciones en masa de certificados antes de empaquetar.
+•	No permitir eliminar paquetes una vez firmados por la autoridad.
+Validaciones Propuestas para Certificados
+Validaciones de Fecha:
+•	Validación fecha expedición: No puede ser igual al día de hoy, ni posterior al día de hoy.
+Validaciones de Certificados:
+•	Validación certificado total: Asignaturas asignadas debe ser igual a Asignaturas cursadas.
+•	Validación certificado parcial: Asignaturas cursadas debe ser menor a Asignaturas asignadas.
+•	Validación Asignaturas asignadas: Debe ser igual al total de asignaturas.
+Funcionalidades de Gestión:
+•	Permitir eliminaciones en masa de certificados antes de empaquetar.
+•	No permitir eliminar paquetes una vez firmados por la autoridad.
+
+9.	Características del Producto
+Plataformas Disponibles
+•	Web: Gestión administrativa, generación y empaquetado de XML.
+•	Móvil: Firma electrónica con validación biométrica y gestión administrativa.
+•	Compatibilidad: iOS (activa), Android (en restablecimiento), navegadores web (todos).
+Funcionalidades Clave
+•	Plantillas Personalizadas: Adaptadas a las carreras y planes de estudio de cada institución.
+•	Generación Automática: XML conformes a normativas de la SEP.
+•	Firma Masiva: Hasta 400 documentos por sesión.
+•	Consulta Móvil: Ver documentos firmados y pendientes.
+•	Almacenamiento en la Nube: Acceso 24/7 desde cualquier dispositivo.
+•	Soporte Técnico: Asistencia vía correo y chat, respuesta en 24 horas.
+Proceso de Seguridad Biométrica
+1.	Registro de Dispositivo: Se toman fotos desde múltiples ángulos con gestos aleatorios.
+2.	Entrenamiento: Firebase Machine Learning Vision asocia las fotos al usuario autorizado.
+3.	Validación: Cada firma requiere una nueva foto para comparar con el registro.
+4.	Antifraude: Gestos aleatorios evitan el uso de fotos para falsificación.
+
+10.	Infraestructura y Tecnología
+Arquitectura del Sistema
+•	Modelo: SaaS basado en la nube.
+•	Estructura Técnica: Diseñada para facilitar actualizaciones y mantenimiento (MVVM).
+•	Escalabilidad: Infraestructura gestionada por proveedores cloud (Google, Amazon).
+Tecnologías Principales
+•	Web: Vue 3, TypeScript, Bootstrap.
+•	Móvil: NativeScript (JavaScript puro para simplicidad).
+•	Backend: Node.js 16, Firebase (autenticación, base de datos, almacenamiento).
+•	Base de Datos: Firebase Realtime Database.
+•	Reconocimiento Facial: Amazon Rekognition.
+•	Almacenamiento: Google Cloud Storage. 
+Integraciones críticas
+•	Amazon Rekognition: Validación biométrica (99.9% de disponibilidad).
+•	Firebase: Plataforma para autenticación, base de datos, y funciones cloud (triggers para acciones automáticas, como notificaciones).
+•	SAT: Validación de firmas electrónicas (.CER/.KEY).
+•	SEP: Generación de XML conforme al MET/MEC.
+Detalle de Triggers en Firebase
+•	Función: Acciones automáticas, como notificar al usuario administrativo cuando hay paquetes pendientes de firma.
+•	Ejemplo: Un trigger detecta un nuevo XML en la base de datos y envía una notificación push al dispositivo del usuario administrativo.
+Pruebas
+•	Frontend Web: Probado únicamente en Google Chrome para garantizar compatibilidad en Windows. 
+•	Razón: Chrome es el navegador más utilizado por los usuarios objetivo, minimizando problemas de compatibilidad.
+
+11.	Seguridad y Certificaciones
+Certificaciones Internacionales
+•	ISO 27001: Sistema de Gestión de Seguridad de la Información.
+•	ISO 27017: Controles de Seguridad para Servicios en la Nube.
+•	ISO 27018: Protección de Datos Personales en la Nube.
+•	Respaldo: Certificaciones de Google y Amazon.
+Medidas de Seguridad
+•	Cifrado: HTTPS en todas las comunicaciones.
+•	Autenticación: Sistema robusto de Firebase.
+•	Almacenamiento Seguro: Firmas electrónicas cifradas en el dispositivo móvil.
+•	Acceso Controlado: Solo usuarios autenticados acceden a los datos.
+•	Separación de Datos: Información de clientes en entornos seguros separados.
+Política de Respaldos
+•	Frecuencia: Respaldos diarios a las 3:00 AM en Firestore.
+•	Recuperación: Pérdida máxima de un día de datos.
+•	Limitación: Sin protección contra errores humanos o programáticos del equipo CERTISEP.
+•	Alta Disponibilidad: Replicación automática para integridad de archivos.
+
+12.	Estado Actual y Limitaciones
+Capacidades Actuales
+•	Usuarios: Sin límite por institución (máximo registrado: 5).
+•	Dispositivos: Un dispositivo móvil por usuario administrativo.
+•	Documentos: Hasta 400 por sesión de firma.
+•	Almacenamiento: Solo se guarda la última versión de plantillas Excel.
+Limitaciones 
+•	Aplicación Android:
+o	Problema: No disponible en Play Store por incompatibilidad con APIs recientes.
+o	Impacto: Usuarios deben usar iOS o la web, limitando accesibilidad.
+•	Validación de Plantillas:
+o	Problema: Solo acepta hojas Excel nombradas "Registros".
+o	Impacto: Error si el nombre es diferente, o si incluye más de una hoja.
+•	Procesamiento de Volúmenes Altos:
+o	Problema: MET/MEC no procesan 400 títulos/paquetes simultáneamente.
+o	Impacto: Retrasos en lotes grandes.
+•	Testing:
+o	Problema: Pruebas manuales basadas en reportes de usuarios.
+o	Impacto: Retrasos en corrección de errores.
+
+13.	Mejoras Futuras
+Prioridades
+1.	Reestablecer compatibilidad con Android.
+2.	Mejorar validación de plantillas Excel (nombres personalizados).
+3.	Implementar pruebas automatizadas y unitarias.
+Servicios en Evaluación
+•	Eliminación del servicio SMS (poca confiabilidad).
+•	Mejoras en la experiencia de usuario móvil.
+•	Optimización de procesos de firma masiva.
+
+14.	Glosario
+•	RVOE: Reconocimiento de Validez Oficial de Estudios, otorgado por la SEP para validar programas educativos.
+•	XML: Formato digital estructurado usado para certificados y títulos, requerido por la SEP.
+•	MET: Módulo Electrónico de Titulación.
+•	MEC: Módulo Electrónico de Certificación.
+•	Firma Electrónica: Método digital seguro para autenticar documentos, usando certificados .CER y .KEY del SAT.
+•	Amazon Rekognition: Servicio de reconocimiento facial para validar la identidad del firmante.
+•	Firebase: Plataforma que gestiona autenticación, base de datos y almacenamiento en la nube.
+•	SaaS: Software as a Service, modelo donde el software se ofrece como servicio en la nube.
+
+
+
