@@ -554,22 +554,27 @@
     {
       "id": "R04-LEVEL-ENFORCEMENT",
       "title": "Enforce specified C4 level",
-      "description": "Generate diagram at the level explicitly specified in the description.",
+      "description": "Generate diagram at the level explicitly specified in the description, ensuring elements match the C4 level hierarchy.",
       "applies_to": [
         "model"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use `person`, `softwareSystem`, `group` for System Context; add `container` for Containers; add `component` for Components. Reject unspecified levels. Example: For System Context, use `app = softwareSystem \"App\" { }`, not `ui = container \"UI\" { }`.",
-      "correction_strategy": "Convert to specified level, replacing invalid elements (e.g., `container` → `softwareSystem` in System Context).",
+      "instruction": "Use `person`, `softwareSystem`, `group` for System Context; add `container` nested within `softwareSystem` for Containers; add `component` nested within `container` for Components. Reject unspecified levels. In container diagrams, all containers must be defined inside a `softwareSystem` block (e.g., `app = softwareSystem \"App\" { webApp = container \"WebApp\" { } }`). In component diagrams, components must be inside a `container` within a `softwareSystem`. Example: For Container level, use `app = softwareSystem \"App\" { webApp = container \"WebApp\" { description \"Web\"; tags \"container\" } }`, not `webApp = container \"WebApp\" { }`.",
+      "correction_strategy": "Convert to specified level, replacing invalid elements (e.g., top-level `container` → nested `container` in `softwareSystem` for Container level). Move top-level containers into a `softwareSystem` block.",
       "examples": [
         {
           "valid": true,
-          "dsl": "app = softwareSystem \"App\" { description \"App\"; tags \"system\" }"
+          "dsl": "app = softwareSystem \"App\" {\n    description \"App\"\n    tags \"system\"\n    webApp = container \"WebApp\" {\n        description \"Web interface\"\n        tags \"container\"\n    }\n}"
         },
         {
           "valid": false,
-          "dsl": "app = softwareSystem \"App\" { ui = container \"UI\" { description \"UI\"; tags \"container\" } }",
+          "dsl": "webApp = container \"WebApp\" {\n    description \"Web interface\"\n    tags \"container\"\n}",
+          "error": "Invalid top-level container in Container diagram; must be nested in softwareSystem"
+        },
+        {
+          "valid": false,
+          "dsl": "app = softwareSystem \"App\" {\n    ui = container \"UI\" {\n        description \"UI\"\n        tags \"container\"\n    }\n}",
           "error": "Invalid container in System Context diagram"
         }
       ]
@@ -577,28 +582,33 @@
     {
       "id": "R05-GROUP-REQUIRED",
       "title": "Required provider-specific grouping",
-      "description": "External systems must be in provider-specific groups for all C4 levels, using defined mappings.",
+      "description": "External systems must be in provider-specific groups for all C4 levels, using defined mappings, with no inline definitions.",
       "applies_to": [
         "softwareSystem"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use `group \"NAME\" { }` for external systems in System Context, Container, and Component diagrams, strictly matching mapping_guidelines.groups (e.g., 'Gobierno' for SAT/SEP, 'Google' for Firebase, 'Amazon' for Rekognition). Reject generic groups (e.g., 'Servicios Externos', 'Proveedores Externos') unless no provider is identified. Example: `group \"Gobierno\" { sat = softwareSystem \"SAT\" { } }`.",
-      "correction_strategy": "Move ungrouped or generically grouped external systems to provider-specific groups per mapping_guidelines.groups. Use 'Servicios Externos' only if no provider matches.",
+      "instruction": "Use `group \"NAME\" { }` for external systems in System Context, Container, and Component diagrams, strictly matching mapping_guidelines.groups (e.g., 'Gobierno' for SAT/SEP, 'Google' for Firebase, 'Amazon' for Rekognition). Reject generic groups (e.g., 'Servicios Externos') unless no provider is identified. External systems must be defined as named elements (e.g., `firebase = softwareSystem \"Firebase\" { }`) within a group, not inline in relationships. Apply pre-generation validation to enforce grouping. Example: `group \"Google\" { firebase = softwareSystem \"Firebase\" { description \"Service\"; tags \"external firebase\" } }`.",
+      "correction_strategy": "Move ungrouped or generically grouped external systems to provider-specific groups per mapping_guidelines.groups. Convert inline softwareSystem definitions in relationships to named elements in appropriate groups. Use 'Servicios Externos' only if no provider matches.",
       "examples": [
         {
           "valid": true,
-          "dsl": "group \"Gobierno\" { sat = softwareSystem \"SAT\" { description \"SAT\"; tags \"external sat\" } }"
+          "dsl": "group \"Google\" {\n    firebase = softwareSystem \"Firebase\" {\n        description \"Service\"\n        tags \"external firebase\"\n    }\n}"
         },
         {
           "valid": false,
-          "dsl": "group \"Servicios Externos\" { sat = softwareSystem \"SAT\" { description \"SAT\"; tags \"external sat\" } }",
+          "dsl": "group \"Servicios Externos\" {\n    sat = softwareSystem \"SAT\" {\n        description \"SAT\"\n        tags \"external sat\"\n    }\n}",
           "error": "Generic group 'Servicios Externos' not allowed for known provider (SAT); use 'Gobierno'"
         },
         {
           "valid": false,
-          "dsl": "sat = softwareSystem \"SAT\" { description \"SAT\"; tags \"external sat\" }",
+          "dsl": "sat = softwareSystem \"SAT\" {\n    description \"SAT\"\n    tags \"external sat\"\n}",
           "error": "External system not in provider-specific group"
+        },
+        {
+          "valid": false,
+          "dsl": "app -> softwareSystem \"Firebase\" \"Access data\"",
+          "error": "Inline softwareSystem definition in relationship; must be a named element in a group"
         }
       ]
     },
@@ -691,22 +701,22 @@
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Ensure balanced braces, closed quotes, no invalid characters, no semicolons, relationships within `model`, and valid view syntax exactly matching fixed_template (e.g., `systemContext IDENTIFIER \"SystemContext\" { include *\n    autoLayout lr }`). Validate indentation, exact titles (e.g., 'SystemContext'), and reject malformed view blocks. Apply pre-generation validation to enforce fixed_template titles. Example: `workspace { model { user -> app \"Action\" } views { systemContext app \"SystemContext\" { include *\n    autoLayout lr } } }`.",
-      "correction_strategy": "Fix braces, quotes, remove invalid characters/semicolons, move relationships to model block, correct view syntax to match fixed_template (e.g., replace `systemContext IDENTIFIER \"Diagrama de Contexto\"` with `systemContext IDENTIFIER \"SystemContext\"`, ensure proper indentation with newline after include).",
+      "instruction": "Ensure balanced braces, closed quotes, no invalid characters, no semicolons, relationships within `model`, and valid view syntax exactly matching fixed_template (e.g., `systemContext IDENTIFIER \"SystemContext\" { include *\n    autoLayout lr }`, `component CONTAINER_ID \"Components\" { include *\n    autoLayout lr }`). Validate indentation, exact titles (e.g., 'SystemContext', 'Components'), and reject malformed view blocks or dotted identifiers (e.g., `app.container`). Relationships must be inside the `model` block, not at the workspace level or elsewhere. Apply pre-generation validation to enforce fixed_template titles and structure. Example: `workspace { model { user -> app \"Action\" } views { component backend \"Components\" { include *\n    autoLayout lr } } }`.",
+      "correction_strategy": "Fix braces, quotes, remove invalid characters/semicolons, move relationships to model block, correct view syntax to match fixed_template (e.g., replace `component app.container \"Backend\"` with `component backend \"Components\"`, ensure newline after include, fix indentation).",
       "examples": [
         {
           "valid": true,
-          "dsl": "workspace \"System\" { model { app = softwareSystem \"App\" { description \"App\"; tags \"system\" } user -> app \"Consulta datos\" } views { systemContext app \"SystemContext\" { include *\n    autoLayout lr } } }"
+          "dsl": "workspace \"System\" {\n    model {\n        app = softwareSystem \"App\" {\n            description \"App\"\n            tags \"system\"\n        }\n        user -> app \"Consulta datos\"\n    }\n    views {\n        systemContext app \"SystemContext\" {\n            include *\n            autoLayout lr\n        }\n    }\n}"
         },
         {
           "valid": false,
-          "dsl": "workspace { model { } views { systemContext CertificadosApp \"Diagrama de Contexto\" { include *; autoLayout lr } } }",
-          "error": "Invalid systemContext view: incorrect title 'Diagrama de Contexto' or semicolon"
+          "dsl": "workspace {\n    model { }\n    user -> app \"Consulta datos\"\n    views { }\n}",
+          "error": "Relationship outside model block"
         },
         {
           "valid": false,
-          "dsl": "workspace { model { } views { systemContext CertificadosApp \"SystemContext\" { include * autoLayout lr } } }",
-          "error": "Invalid systemContext view: incorrect indentation, missing newline"
+          "dsl": "workspace {\n    model { }\n    views { component app.container \"Backend\" { include *; autoLayout lr } }\n}",
+          "error": "Invalid component view: dotted identifier 'app.container'; use container identifier (e.g., 'backend')"
         }
       ]
     },
@@ -775,17 +785,17 @@
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Remove `//`, `#`, `/*`, `*/` before generation with mandatory pre-generation validation. Example: ensure no `// Sistemas externos`.",
+      "instruction": "Remove `//`, `#`, `/*`, `*/` before generation with mandatory pre-generation validation. Common comment patterns like `// Relaciones internas` or `// External system` must be stripped. Example: ensure no `// Relaciones internas`.",
       "correction_strategy": "Remove all detected comments.",
       "examples": [
         {
           "valid": true,
-          "dsl": "workspace \"System\" { model { } }"
+          "dsl": "workspace \"System\" {\n    model { }\n}"
         },
         {
           "valid": false,
-          "dsl": "// Sistemas externos\nworkspace \"System\" { }",
-          "error": "Comment detected"
+          "dsl": "workspace \"System\" {\n    // Relaciones internas\n    model { }\n}",
+          "error": "Comment detected: // Relaciones internas"
         }
       ]
     },
@@ -818,6 +828,11 @@
           "valid": false,
           "dsl": "views { systemContext CertificadosApp \"SystemContext\" { include * autoLayout lr } }",
           "error": "Invalid systemContext view: incorrect indentation, missing newline"
+        },
+        {
+          "valid": false,
+          "dsl": "views {\n    component app.container \"Backend\" {\n        include *\n        autoLayout lr\n    }\n}",
+          "error": "Invalid component view: dotted identifier 'app.container'; use container identifier (e.g., 'backend')"
         }
       ]
     },
