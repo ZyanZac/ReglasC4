@@ -345,7 +345,8 @@
     "R13-VIEW-OPTIONAL",
     "R14-STYLE-DEFINITIONS",
     "R15-DISTINCT-DESCRIPTIONS",
-    "R16-STRUCTURIZR-DSL-ONLY"
+    "R16-STRUCTURIZR-DSL-ONLY",
+    "R17-STRICT-COMPLIANCE"
   ],
   "validation_groups": [
     {
@@ -355,7 +356,8 @@
         "R02-MODEL-VIEWS",
         "R04-LEVEL-ENFORCEMENT",
         "R13-VIEW-OPTIONAL",
-        "R16-STRUCTURIZR-DSL-ONLY"
+        "R16-STRUCTURIZR-DSL-ONLY",
+        "R17-STRICT-COMPLIANCE"
       ]
     },
     {
@@ -507,11 +509,20 @@
         "invalid": "+---------+\n|  User   |\n+---------+\n   |     \n   v     \n+---------+\n|  System |\n+---------+",
         "corrected": "workspace \"System\" {\n    model {\n        user = person \"User\" {\n            description \"Interacts with system\"\n            tags \"User\"\n        }\n        app = softwareSystem \"System\" {\n            description \"Manages tasks\"\n            tags \"system\"\n        }\n        user -> app \"Solicita acción\"\n    }\n    views {\n        systemContext app \"SystemContext\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"system\" { background #003366; color white; shape roundedbox }\n        }\n    }\n}"
       }
+    },
+    {
+      "issue": "AI-driven format deviation",
+      "description": "AI generated non-DSL formats (e.g., ASCII, JSON, Mermaid) due to assumptions about accessibility or utility, despite explicit Structurizr DSL requirement.",
+      "correction": "Enforce Structurizr DSL per R16-STRUCTURIZR-DSL-ONLY and R17-STRICT-COMPLIANCE. Convert non-DSL outputs to Structurizr DSL using fixed_template. Refine DSL for corrections without switching formats.",
+      "example": {
+        "invalid": "+---------+\n|  User   |\n+---------+\n   |     \n   v     \n+---------+\n|  System |\n+---------+",
+        "corrected": "workspace \"System\" {\n    model {\n        user = person \"User\" {\n            description \"Interacts with system\"\n            tags \"User\"\n        }\n        app = softwareSystem \"System\" {\n            description \"Manages tasks\"\n            tags \"system\"\n        }\n        user -> app \"Solicita acción\"\n    }\n    views {\n        systemContext app \"SystemContext\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"system\" { background #003366; color white; shape roundedbox }\n        }\n    }\n}"
+      }
     }
   ],
   "generation_guidelines": {
-    "pre_validation": "Generate output strictly as Structurizr DSL, using fixed_template and example_mappings, with no other formats (e.g., ASCII, JSON, Mermaid, UML) permitted. Determine C4 level from description using level_detection, requiring explicit level specification. Apply provider-specific groups for all levels, strictly matching mapping_guidelines.groups, rejecting generic groups for known providers. Include all external systems mentioned in the description (e.g., Firebase, Rekognition, SAT, SEP), validated pre-generation. Use distinct descriptions, mandatory clarification parsing with pre-generation validation (e.g., 'carga' for SAT, 'verifica' for SEP), and exact fixed_template view titles (e.g., 'SystemContext'). Remove all comments (//, #, /*, */) with mandatory pre-generation validation. Place relationships within model block. Use dynamic_mapping for unlisted terms, prioritizing description-specific technologies (e.g., 'Node.js' over 'Spring Boot'). For Container diagrams, ensure all containers are nested within a softwareSystem block, and persons/external systems are at the model level in groups. For Component diagrams, ensure components are within a single container. Reject inline softwareSystem definitions or non-DSL outputs, including Mermaid (e.g., `graph TD`) or JSON (e.g., `{}`) syntax. Validate view syntax, titles, and indentation pre-generation. After correction requests, refine the Structurizr DSL output to address issues (e.g., missing elements, incorrect verbs) without switching to another format (e.g., JSON, Mermaid). Check known_issues and enforce R16-STRUCTURIZR-DSL-ONLY.",
-    "post_validation": "Validate against rules in validation_order, ensuring correct C4 level, Structurizr DSL syntax, exact view titles, correct grouping, inclusion of all external systems, and description adherence. Confirm output is Structurizr DSL per R16-STRUCTURIZR-DSL-ONLY, rejecting Mermaid, JSON, or other non-DSL formats."
+    "pre_validation": "Generate output strictly as Structurizr DSL, using fixed_template and example_mappings, with no other formats (e.g., ASCII, JSON, Mermaid, UML) permitted. Determine C4 level from description using level_detection, requiring explicit level specification. Apply provider-specific groups for all levels, strictly matching mapping_guidelines.groups, rejecting generic groups for known providers. Include all external systems mentioned in the description (e.g., Firebase, Rekognition, SAT, SEP), validated pre-generation. Use distinct descriptions, mandatory clarification parsing with pre-generation validation (e.g., 'carga' for SAT, 'verifica' for SEP), and exact fixed_template view titles (e.g., 'SystemContext'). Remove all comments (//, #, /*, */) with mandatory pre-generation validation. Place relationships within model block. Use dynamic_mapping for unlisted terms, prioritizing description-specific technologies (e.g., 'Node.js' over 'Spring Boot'). For Container diagrams, ensure all containers are nested within a softwareSystem block, and persons/external systems are at the model level in groups. For Component diagrams, ensure components are within a single container. Reject inline softwareSystem definitions or non-DSL outputs, including ASCII (e.g., `+--+`), JSON (e.g., `{}`), or Mermaid (e.g., `graph TD`). Do not deviate from DSL based on assumptions about accessibility, utility, or user preferences (e.g., assuming ASCII is 'accessible' or JSON is 'useful'). After correction requests, refine the Structurizr DSL output to address issues (e.g., missing elements, incorrect verbs) without switching to another format. Apply pre-generation validation to enforce R16-STRUCTURIZR-DSL-ONLY and R17-STRICT-COMPLIANCE.",
+    "post_validation": "Validate against rules in validation_order, ensuring correct C4 level, Structurizr DSL syntax, exact view titles, correct grouping, inclusion of all external systems, and description adherence. Confirm output is Structurizr DSL per R16-STRUCTURIZR-DSL-ONLY and R17-STRICT-COMPLIANCE, rejecting ASCII, JSON, Mermaid, or other non-DSL formats."
   },
   "rules": [
     {
@@ -744,13 +755,13 @@
     {
       "id": "R09-SYNTAX-VALIDATION",
       "title": "Ensure valid Structurizr DSL syntax",
-      "description": "DSL must have valid Structurizr syntax without semicolons, with relationships in model block, correct view definitions, and exact formatting. Non-DSL formats (e.g., ASCII, JSON, Mermaid) are rejected.",
+      "description": "DSL must have valid Structurizr syntax without semicolons, with relationships in model block, correct view definitions, and exact formatting. Non-DSL formats (e.g., ASCII, JSON, Mermaid) are rejected, especially if chosen due to AI assumptions about accessibility or utility.",
       "applies_to": [
         "dsl.syntax"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Ensure balanced braces, closed quotes, no invalid characters, no semicolons, relationships within `model`, and valid view syntax exactly matching fixed_template (e.g., `systemContext IDENTIFIER \"SystemContext\" { include *\n    autoLayout lr }`, `component CONTAINER_ID \"Components\" { include *\n    autoLayout lr }`). Validate indentation, exact titles (e.g., 'SystemContext', 'Components'), and reject malformed view blocks, dotted identifiers (e.g., `app.container`), or non-DSL formats (e.g., ASCII, JSON, Mermaid with `graph TD`, `classDiagram`, or `sequenceDiagram`). Relationships must be inside the `model` block. Apply pre-generation validation to enforce fixed_template structure, reject Mermaid syntax (e.g., `A --> B`), JSON syntax (e.g., `{}`), and per R16-STRUCTURIZR-DSL-ONLY. Example: `workspace { model { user -> app \"Action\" } views { component backend \"Components\" { include *\n    autoLayout lr } } }`.",
+      "instruction": "Ensure balanced braces, closed quotes, no invalid characters, no semicolons, relationships within `model`, and valid view syntax exactly matching fixed_template (e.g., `systemContext IDENTIFIER \"SystemContext\" { include *\n    autoLayout lr }`, `component CONTAINER_ID \"Components\" { include *\n    autoLayout lr }). Validate indentation, exact titles, and reject malformed view blocks, dotted identifiers (e.g., `app.container`), or non-DSL formats (e.g., ASCII with `+--+`, JSON with `{}`, Mermaid with `graph TD`, `classDiagram`). Do not allow AI-driven format switches based on assumptions (e.g., ASCII for 'accessibility', JSON for 'utility'). Relationships must be inside `model`. Apply pre-generation validation to enforce fixed_template structure, reject non-DSL syntax, and comply with R16-STRUCTURIZR-DSL-ONLY and R17-STRICT-COMPLIANCE. Example: `workspace { model { user -> app \"Action\" } views { component backend \"Components\" { include *\n    autoLayout lr } } }`.",
       "correction_strategy": "Fix braces, quotes, remove invalid characters/semicolons, move relationships to model block, correct view syntax to match fixed_template (e.g., replace `component app.container \"Backend\"` with `component backend \"Components\"`, ensure newline after include, fix indentation). Convert non-DSL outputs (e.g., ASCII, JSON, Mermaid) to Structurizr DSL using fixed_template.",
       "examples": [
         {
@@ -765,12 +776,12 @@
         {
           "valid": false,
           "dsl": "graph TD\n    A[User] --> B[System]\n    B --> C[External]",
-          "error": "Invalid Mermaid output; must be Structurizr DSL"
+          "error": "Invalid Mermaid output; AI deviated from Structurizr DSL"
         },
         {
           "valid": false,
           "dsl": "{\"model\":{\"user\":\"User\",\"system\":\"App\"}}",
-          "error": "Invalid JSON output; must be Structurizr DSL"
+          "error": "Invalid JSON output; AI deviated from Structurizr DSL based on utility assumption"
         }
       ]
     },
@@ -948,13 +959,13 @@
     {
       "id": "R16-STRUCTURIZR-DSL-ONLY",
       "title": "Output in Structurizr DSL only",
-      "description": "All generated C4 model diagrams must be in Structurizr DSL format, strictly adhering to the fixed_template structure. Non-DSL formats, including ASCII, JSON, Mermaid, UML, or other diagramming notations, are prohibited. Correction requests must result in Structurizr DSL output, refining the DSL content without switching formats.",
+      "description": "All generated C4 model diagrams must be in Structurizr DSL format, strictly adhering to the fixed_template structure. Non-DSL formats, including ASCII, JSON, Mermaid, UML, or other notations, are prohibited. The AI must not deviate from DSL based on assumptions about accessibility, utility, or user preferences. Correction requests must result in refined Structurizr DSL output, addressing issues without switching formats.",
       "applies_to": [
         "output"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Generate output exclusively as Structurizr DSL, using the fixed_template for the specified C4 level (systemContext, container, component). Ensure the output includes `workspace`, `model`, and `views` blocks with proper Structurizr syntax (e.g., `workspace \"SYSTEM_NAME\" { model { } views { } }`). Reject ASCII diagrams, JSON, Mermaid (e.g., `graph TD`, `classDiagram`), UML, or other formats. After correction requests, refine the Structurizr DSL output to address issues (e.g., missing elements, incorrect verbs) without changing to another format. Apply pre-generation validation to confirm DSL format and reject non-DSL syntax (e.g., Mermaid's `graph` or JSON's `{}` structure). Example: `workspace \"System\" { model { app = softwareSystem \"App\" { } } views { systemContext app \"SystemContext\" { include * } } }`.",
+      "instruction": "Generate output exclusively as Structurizr DSL, using the fixed_template for the specified C4 level (systemContext, container, component). Ensure the output includes `workspace`, `model`, and `views` blocks with proper Structurizr syntax (e.g., `workspace \"SYSTEM_NAME\" { model { } views { } }`). Reject ASCII, JSON, Mermaid (e.g., `graph TD`, `classDiagram`), UML, or other formats. Do not choose alternative formats based on assumptions (e.g., ASCII for 'accessibility' or JSON for 'utility'). After correction requests, refine the Structurizr DSL output to address specific issues (e.g., missing elements, incorrect verbs) without switching to another format. Apply pre-generation validation to confirm DSL format and reject non-DSL syntax (e.g., Mermaid's `graph`, JSON's `{}`, ASCII's `+--+`). Example: `workspace \"System\" { model { app = softwareSystem \"App\" { } } views { systemContext app \"SystemContext\" { include * } } }`.",
       "correction_strategy": "Convert any non-DSL output (e.g., ASCII, JSON, Mermaid) to Structurizr DSL using the fixed_template for the specified C4 level. For correction requests, refine the DSL output without switching formats.",
       "examples": [
         {
@@ -964,17 +975,46 @@
         {
           "valid": false,
           "dsl": "graph TD\n    A[User] --> B[System]\n    B --> C[External]",
-          "error": "Invalid Mermaid diagram; output must be Structurizr DSL"
+          "error": "Invalid Mermaid diagram; AI deviated from Structurizr DSL"
         },
         {
           "valid": false,
           "dsl": "{\"model\":{\"user\":\"User\",\"system\":\"App\"}}",
-          "error": "Invalid JSON output; output must be Structurizr DSL"
+          "error": "Invalid JSON output; AI deviated from Structurizr DSL based on utility assumption"
         },
         {
           "valid": false,
           "dsl": "+---------+\n|  User   |\n+---------+\n   |     \n   v     \n+---------+\n|  System |\n+---------+",
-          "error": "Invalid ASCII diagram; output must be Structurizr DSL"
+          "error": "Invalid ASCII diagram; AI deviated from Structurizr DSL based on accessibility assumption"
+        }
+      ]
+    },
+    {
+      "id": "R17-STRICT-COMPLIANCE",
+      "title": "Ensure strict compliance with specified format",
+      "description": "The AI must strictly adhere to the user-specified output format (Structurizr DSL) as defined in fixed_template and R16-STRUCTURIZR-DSL-ONLY. Deviations based on AI assumptions about accessibility, utility, or user preferences (e.g., choosing ASCII, JSON, or Mermaid) are prohibited. Correction requests must refine the Structurizr DSL output without switching formats.",
+      "applies_to": [
+        "output",
+        "behavior"
+      ],
+      "severity": "error",
+      "validation": "automated",
+      "instruction": "Generate output exclusively in Structurizr DSL, following fixed_template for the specified C4 level. Do not deviate from DSL based on assumptions about user needs (e.g., assuming ASCII is more 'accessible' or JSON is more 'useful'). Ensure correction requests result in refined Structurizr DSL output, addressing issues (e.g., missing elements, incorrect verbs) without changing formats. Apply pre-generation validation to confirm compliance with Structurizr DSL and reject any AI-driven format switches. Example: If the user requests C4 diagrams, produce `workspace \"System\" { model { } views { } }` in DSL, not ASCII or JSON, even if the AI believes otherwise. Post-correction, maintain DSL format.",
+      "correction_strategy": "Convert any non-compliant output (e.g., ASCII, JSON, Mermaid) to Structurizr DSL using fixed_template. Refine DSL output for corrections without switching formats.",
+      "examples": [
+        {
+          "valid": true,
+          "dsl": "workspace \"System\" {\n    model {\n        user = person \"User\" {\n            description \"User\"\n            tags \"User\"\n        }\n        app = softwareSystem \"App\" {\n            description \"App\"\n            tags \"system\"\n        }\n        user -> app \"Solicita acción\"\n    }\n    views {\n        systemContext app \"SystemContext\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"system\" { background #003366; color white; shape roundedbox }\n        }\n    }\n}"
+        },
+        {
+          "valid": false,
+          "dsl": "+---------+\n|  User   |\n+---------+\n   |     \n   v     \n+---------+\n|  System |\n+---------+",
+          "error": "Invalid ASCII output; AI deviated from Structurizr DSL based on accessibility assumption"
+        },
+        {
+          "valid": false,
+          "dsl": "{\"model\":{\"user\":\"User\",\"system\":\"App\"}}",
+          "error": "Invalid JSON output; AI deviated from Structurizr DSL based on utility assumption"
         }
       ]
     }
