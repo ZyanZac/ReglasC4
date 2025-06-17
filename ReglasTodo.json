@@ -398,6 +398,21 @@
       "description": "Un diagrama de componentes para el backend de una aplicación web que genera certificados, incluyendo un controlador de certificados, servicio de biometría, y repositorio de datos. Se vincula con Firebase y Amazon Rekognition.",
       "level": "component",
       "dsl": "workspace \"Certificados Digitales\" {\n    model {\n        app = softwareSystem \"CertificadosService\" {\n            backend = container \"Backend\" {\n                certController = component \"Controlador de Certificados\" {\n                    description \"Maneja solicitudes de certificados\"\n                    tags \"component\"\n                    technology \"Node.js\"\n                }\n                bioService = component \"Servicio de Biometría\" {\n                    description \"Integra verificación biométrica\"\n                    tags \"component\"\n                    technology \"Node.js\"\n                }\n                dataRepo = component \"Repositorio de Datos\" {\n                    description \"Accede a datos de certificados\"\n                    tags \"component\"\n                    technology \"Node.js\"\n                }\n            }\n        }\n        representante = person \"Representante del Instituto\" {\n            description \"Encargado de generar certificados\"\n            tags \"User\"\n        }\n        group \"Google\" {\n            firebase = softwareSystem \"Firebase\" {\n                description \"Gestiona almacenamiento\"\n                tags \"external firebase\"\n            }\n        }\n        group \"Amazon\" {\n            rekognition = softwareSystem \"Amazon Rekognition\" {\n                description \"Verifica datos biométricos\"\n                tags \"external amazon\"\n            }\n        }\n        representante -> certController \"Solicita certificados\"\n        certController -> bioService \"Solicita verificación biométrica\"\n        certController -> dataRepo \"Almacena y consulta datos\"\n        bioService -> rekognition \"Valida biometría\"\n        dataRepo -> firebase \"Almacena datos\"\n    }\n    views {\n        component backend \"Components\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"SoftwareSystem\" { background #e0e0e0; color black; shape roundedbox }\n            element \"external\" { background #f2f2f2; color black; shape roundedbox }\n            element \"container\" { background #d0d0ff; color black; shape roundedbox }\n            element \"component\" { background #b0ffb0; color black; shape box }\n        }\n    }\n}"
+    },
+    {
+      "description": "A system context diagram for an e-commerce platform where customers browse products, place orders, and make payments via Stripe, with inventory managed by an external warehouse system.",
+      "level": "systemContext",
+      "dsl": "workspace \"ECommerce\" {\n    model {\n        customer = person \"Customer\" {\n            description \"Browses and orders products\"\n            tags \"User\"\n        }\n        group \"Platform\" {\n            app = softwareSystem \"ECommerceService\" {\n                description \"Manages catalog, orders, and payments\"\n                tags \"system\"\n            }\n        }\n        group \"Payments\" {\n            stripe = softwareSystem \"Stripe\" {\n                description \"Processes payments\"\n                tags \"external payment\"\n            }\n        }\n        group \"Logistics\" {\n            warehouse = softwareSystem \"WarehouseSystem\" {\n                description \"Manages inventory\"\n                tags \"external\"\n            }\n        }\n        customer -> app \"Solicita pedidos\"\n        app -> stripe \"Procesa pagos\"\n        app -> warehouse \"Consulta inventario\"\n    }\n    views {\n        systemContext app \"SystemContext\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"system\" { background #003366; color white; shape roundedbox }\n            element \"external\" { background #f2f2f2; color black; shape roundedbox }\n            element \"payment\" { background #6772E5; color white; shape roundedbox }\n        }\n    }\n}"
+    },
+    {
+      "description": "A container diagram for an IoT smart home system with a mobile app, cloud backend, and device gateway, integrated with AWS IoT for device communication.",
+      "level": "container",
+      "dsl": "workspace \"SmartHome\" {\n    model {\n        user = person \"Homeowner\" {\n            description \"Controls smart devices\"\n            tags \"User\"\n        }\n        app = softwareSystem \"SmartHomeService\" {\n            mobileApp = container \"MobileApp\" {\n                description \"Interface for controlling devices\"\n                technology \"Flutter\"\n                tags \"container mobile\"\n            }\n            backend = container \"Backend\" {\n                description \"Processes device commands\"\n                technology \"Node.js\"\n                tags \"container api\"\n            }\n            gateway = container \"DeviceGateway\" {\n                description \"Communicates with devices\"\n                technology \"Python\"\n                tags \"container\"\n            }\n        }\n        group \"Amazon\" {\n            awsIot = softwareSystem \"AWS IoT\" {\n                description \"Manages device communication\"\n                tags \"external amazon\"\n            }\n        }\n        user -> mobileApp \"Controla dispositivos\"\n        mobileApp -> backend \"Envía comandos\"\n        backend -> gateway \"Orquesta dispositivos\"\n        gateway -> awsIot \"Transmite datos\"\n    }\n    views {\n        container app \"Containers\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"SoftwareSystem\" { background #e0e0e0; color black; shape roundedbox }\n            element \"external\" { background #f2f2f2; color black; shape roundedbox }\n            element \"container\" { background #d0d0ff; color black; shape roundedbox }\n            element \"mobile\" { background #d0d0ff; color black; shape roundedbox }\n            element \"api\" { background #d0d0ff; color black; shape roundedbox }\n        }\n    }\n}"
+    },
+    {
+      "description": "A component diagram for the backend of CERTISEP, including components for certificate generation, biometric validation, and data storage, integrated with Firebase, Rekognition, SAT, and SEP.",
+      "level": "component",
+      "dsl": "workspace \"CERTISEP\" {\n    model {\n        userOper = person \"Usuario Operativo\" {\n            description \"Genera certificados\"\n            tags \"User\"\n        }\n        userAdmin = person \"Usuario Administrativo\" {\n            description \"Firma documentos\"\n            tags \"User\"\n        }\n        app = softwareSystem \"CertificadosService\" {\n            backend = container \"Backend\" {\n                certController = component \"CertController\" {\n                    description \"Coordina generación de certificados\"\n                    technology \"Node.js\"\n                    tags \"component\"\n                }\n                xmlGenerator = component \"XMLGenerator\" {\n                    description \"Genera XML conforme a SEP\"\n                    technology \"Node.js\"\n                    tags \"component\"\n                }\n                bioValidator = component \"BioValidator\" {\n                    description \"Valida biometría vía Rekognition\"\n                    technology \"Node.js\"\n                    tags \"component\"\n                }\n                dataRepo = component \"DataRepo\" {\n                    description \"Accede a datos en Firebase\"\n                    technology \"Node.js\"\n                    tags \"component\"\n                }\n            }\n        }\n        group \"Gobierno\" {\n            sat = softwareSystem \"SAT\" {\n                description \"Provee .CER/.KEY\"\n                tags \"external sat\"\n            }\n            sep = softwareSystem \"SEP\" {\n                description \"Define lineamientos\"\n                tags \"external sep\"\n            }\n        }\n        group \"Google\" {\n            firebase = softwareSystem \"Firebase\" {\n                description \"Autenticación y almacenamiento\"\n                tags \"external firebase\"\n            }\n        }\n        group \"Amazon\" {\n            rekognition = softwareSystem \"Rekognition\" {\n                description \"Validación biométrica\"\n                tags \"external amazon\"\n            }\n        }\n        userOper -> certController \"Carga plantillas\"\n        userAdmin -> certController \"Carga firma electrónica\"\n        certController -> xmlGenerator \"Solicita XML\"\n        certController -> dataRepo \"Almacena datos\"\n        certController -> bioValidator \"Valida biometría\"\n        xmlGenerator -> sep \"Verifica lineamientos\"\n        bioValidator -> rekognition \"Verifica biometría\"\n        dataRepo -> firebase \"Almacena datos\"\n        certController -> sat \"Valida .CER/.KEY\"\n    }\n    views {\n        component backend \"Components\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"SoftwareSystem\" { background #e0e0e0; color black; shape roundedbox }\n            element \"external\" { background #f2f2f2; color black; shape roundedbox }\n            element \"container\" { background #d0d0ff; color black; shape roundedbox }\n            element \"component\" { background #b0ffb0; color black; shape box }\n            element \"sat\" { background #666666; color white; shape roundedbox }\n            element \"sep\" { background #666666; color white; shape roundedbox }\n            element \"firebase\" { background #4285F4; color white; shape roundedbox }\n            element \"amazon\" { background #FF9900; color black; shape roundedbox }\n        }\n    }\n}"
     }
   ],
   "known_issues": [
@@ -560,51 +575,27 @@
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use `person`, `softwareSystem`, `group` at the model level for System Context; add `container` nested within `softwareSystem` for Containers; add `component` nested within `container` for Components. Reject unspecified levels. In container diagrams, all containers must be defined inside a `softwareSystem` block (e.g., `app = softwareSystem \"App\" { webApp = container \"WebApp\" { } }`). In component diagrams, only `component` elements can be nested inside a `container` within a `softwareSystem`. Persons and external systems must be defined at the model level, not nested in `softwareSystem` or `container`. Example: For Container level, use `app = softwareSystem \"App\" { webApp = container \"WebApp\" { description \"Web\"; tags \"container\" } }`, not `app = softwareSystem \"App\" { user = person \"User\" { } }`.",
-      "correction_strategy": "Convert to specified level, replacing invalid elements (e.g., top-level `container` → nested `container` in `softwareSystem` for Container level). Move `person` or `softwareSystem` elements inside `softwareSystem` to the `model` level.",
+      "instruction": "Use `person`, `softwareSystem`, `group` at the model level for System Context; add `container` nested within `softwareSystem` for Containers; add `component` nested within `container` for Components. Reject unspecified levels. In container diagrams, only `container` elements can be nested inside a `softwareSystem` (e.g., `app = softwareSystem \"App\" { webApp = container \"WebApp\" { } }`). In component diagrams, only `component` elements can be nested inside a `container` within a `softwareSystem`. Persons and external systems must be defined at the model level in provider-specific groups (e.g., `group \"Gobierno\" { sat = softwareSystem \"SAT\" { } }`), not nested in `softwareSystem` or `container`. Apply pre-generation validation to enforce hierarchy. Example: For Container level, use `model { user = person \"User\" { } app = softwareSystem \"App\" { webApp = container \"WebApp\" { } } }`, not `app = softwareSystem \"App\" { user = person \"User\" { } }`.",
+      "correction_strategy": "Convert to specified level, replacing invalid elements (e.g., top-level `container` → nested `container` in `softwareSystem`). Move persons or external systems nested in `softwareSystem` to the model level in provider-specific groups.",
       "examples": [
         {
           "valid": true,
-          "dsl": "app = softwareSystem \"App\" {\n    description \"App\"\n    tags \"system\"\n    webApp = container \"WebApp\" {\n        description \"Web interface\"\n        tags \"container\"\n    }\n}"
-        },
-        {
-          "valid": true,
-          "dsl": "model {\n    user = person \"User\" {\n        description \"User\"\n        tags \"User\"\n    }\n    app = softwareSystem \"App\" {\n        webApp = container \"WebApp\" {\n            description \"Web interface\"\n            tags \"container\"\n        }\n    }\n}"
-        },
-        {
-          "valid": false,
-          "dsl": "webApp = container \"WebApp\" {\n    description \"Web interface\"\n    tags \"container\"\n}",
-          "error": "Invalid top-level container in Container diagram; must be nested in softwareSystem"
-        },
-        {
-          "valid": false,
-          "dsl": "app = softwareSystem \"App\" {\n    ui = container \"UI\" {\n        description \"UI\"\n        tags \"container\"\n    }\n}",
-          "error": "Invalid container in System Context diagram"
-        },
-        {
-          "valid": false,
-          "dsl": "model {\n    app = softwareSystem \"App\" {\n        user = person \"User\" {\n            description \"User\"\n            tags \"User\"\n        }\n        webApp = container \"WebApp\" {\n            description \"Web\"\n            tags \"container\"\n        }\n    }\n}",
-          "error": "Invalid person element inside softwareSystem in Container diagram; person must be at model level"
-        },
-        {
-          "valid": false,
-          "dsl": "model {\n    app = softwareSystem \"App\" {\n        ext = softwareSystem \"External\" {\n            description \"External\"\n            tags \"external\"\n        }\n    }\n}",
-          "error": "Invalid softwareSystem element inside softwareSystem in Container diagram; external systems must be at model level"
+          "dsl": "model {\n    user = person \"User\" {\n        description \"User\"\n        tags \"User\"\n    }\n    group \"Amazon\" {\n        rekognition = softwareSystem \"Rekognition\" {\n            description \"Biometrics\"\n            tags \"external amazon\"\n        }\n    }\n    app = softwareSystem \"App\" {\n        webApp = container \"WebApp\" {\n            description \"Web\"\n            tags \"container\"\n        }\n    }\n}"
         },
         {
           "valid": false,
           "dsl": "model {\n    app = softwareSystem \"App\" {\n        user = person \"User\" {\n            description \"User\"\n            tags \"User\"\n        }\n    }\n}",
-          "error": "Invalid person nested in softwareSystem in Container diagram; persons must be at model level"
+          "error": "Invalid person nested in softwareSystem; persons must be at model level"
         },
         {
           "valid": false,
-          "dsl": "model {\n    app = softwareSystem \"App\" {\n        sep = softwareSystem \"SEP\" {\n            description \"SEP\"\n            tags \"external sep\"\n        }\n    }\n}",
+          "dsl": "model {\n    app = softwareSystem \"App\" {\n        rekognition = softwareSystem \"Rekognition\" {\n            description \"Biometrics\"\n            tags \"external amazon\"\n        }\n    }\n}",
           "error": "Invalid external system nested in softwareSystem; external systems must be at model level in provider-specific group"
         },
         {
           "valid": false,
-          "dsl": "model {\n    webApp = container \"WebApp\" {\n        description \"Web interface\"\n        tags \"container\"\n    }\n}",
-          "error": "Invalid top-level container in Container diagram; must be nested in softwareSystem"
+          "dsl": "model {\n    user = person \"User\" {\n        description \"User\"\n        tags \"User\"\n    }\n    rekognition = softwareSystem \"Rekognition\" {\n        description \"Biometrics\"\n        tags \"external amazon\"\n    }\n    app = softwareSystem \"App\" {\n        webApp = container \"WebApp\" {\n            description \"Web\"\n            tags \"container\"\n        }\n    }\n}",
+          "error": "External system not in provider-specific group; must be in group 'Amazon'"
         }
       ]
     },
@@ -617,8 +608,8 @@
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use `group \"NAME\" { }` for external systems in System Context, Container, and Component diagrams, strictly matching mapping_guidelines.groups (e.g., 'Gobierno' for SAT/SEP, 'Google' for Firebase, 'Amazon' for Rekognition). Reject generic groups (e.g., 'Servicios Externos') unless no provider is identified. External systems must be defined as named elements (e.g., `firebase = softwareSystem \"Firebase\" { }`) within a group, not inline in relationships. Apply pre-generation validation to ensure all mentioned external systems are included and grouped. Example: `group \"Google\" { firebase = softwareSystem \"Firebase\" { description \"Service\"; tags \"external firebase\" } }`.",
-      "correction_strategy": "Move ungrouped or generically grouped external systems to provider-specific groups per mapping_guidelines.groups. Convert inline softwareSystem definitions in relationships to named elements in appropriate groups. Use 'Servicios Externos' only if no provider matches.",
+      "instruction": "Use `group \"NAME\" { }` for external systems in System Context, Container, and Component diagrams, strictly matching mapping_guidelines.groups (e.g., 'Gobierno' for SAT/SEP, 'Google' for Firebase, 'Amazon' for Rekognition). Include all external systems identified in the description (e.g., Firebase, Rekognition, SAT, SEP if mentioned for authentication, biometrics, or guidelines). Reject generic groups (e.g., 'Servicios Externos') unless no provider is identified. External systems must be defined as named elements (e.g., `firebase = softwareSystem \"Firebase\" { }`) within a group, not inline in relationships. Apply pre-generation validation to cross-check against description and mapping_guidelines.external_systems to ensure all mentioned external systems are included and grouped. Example: `group \"Google\" { firebase = softwareSystem \"Firebase\" { description \"Service\"; tags \"external firebase\" } }`.",
+      "correction_strategy": "Move ungrouped or generically grouped external systems to provider-specific groups per mapping_guidelines.groups. Add missing external systems from the description in appropriate groups. Convert inline softwareSystem definitions to named elements in groups.",
       "examples": [
         {
           "valid": true,
@@ -631,20 +622,20 @@
         },
         {
           "valid": false,
-          "dsl": "sat = softwareSystem \"SAT\" {\n    description \"SAT\"\n    tags \"external sat\"\n}",
-          "error": "External system not in provider-specific group"
+          "dsl": "model {\n    app = softwareSystem \"App\" {\n        description \"App\"\n        tags \"system\"\n    }\n    group \"Gobierno\" {\n        sep = softwareSystem \"SEP\" {\n            description \"SEP\"\n            tags \"external sep\"\n        }\n    }\n}",
+          "error": "Missing external system (e.g., SAT) mentioned in description for signature validation"
         },
         {
           "valid": false,
-          "dsl": "app -> softwareSystem \"Firebase\" \"Access data\"",
-          "error": "Inline softwareSystem definition in relationship; must be a named element in a group"
+          "dsl": "rekognition = softwareSystem \"Amazon Rekognition\" {\n    description \"Biometrics\"\n    tags \"external amazon\"\n}",
+          "error": "External system not in provider-specific group; must be in group 'Amazon'"
         }
       ]
     },
     {
       "id": "R06-ALLOWED-NAMES",
       "title": "Use allowed or dynamically mapped names",
-      "description": "Element names must use glossary terms or dynamically mapped technologies/domain terms, preferring glossary terms for main systems. Technologies must match those specified in the provided documentation.",
+      "description": "Element names must use glossary terms or dynamically mapped technologies/domain terms, preferring glossary terms for main systems. Component names must avoid redundancy with their type (e.g., 'Controller' not 'Controller CertController'). Technologies must match those specified in the provided documentation.",
       "applies_to": [
         "softwareSystem.name",
         "container.name",
@@ -652,8 +643,8 @@
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use terms from allowed_names (e.g., Service, Database, Controller) or map unlisted terms per dynamic_mapping (e.g., 'NativeScript' → container 'MobileApp' { technology 'NativeScript' }). For main systems, prefer glossary terms like 'Service' (e.g., 'CertificadosService'). Reject undocumented technologies (e.g., 'Flutter', 'Spring Boot') with pre-generation validation. External systems must be defined as named elements (e.g., `firebase = softwareSystem \"Firebase\" { }`) within a group, not inline in relationships. Validate technology properties for specificity (e.g., avoid 'NativeScript UI'). Example: `CertificadosService`, `container \"MobileApp\" { technology \"NativeScript\" }`.",
-      "correction_strategy": "Replace forbidden names with closest glossary term or apply dynamic_mapping (e.g., 'NativeScript' → 'MobileApp' with technology 'NativeScript'). For main systems, replace descriptive names (e.g., 'Sistema de Certificados Digitales') with 'IDENTIFIERService' (e.g., 'CertificadosService'). Replace vague technology terms (e.g., 'NativeScript UI') with specific ones (e.g., 'NativeScript').",
+      "instruction": "Use terms from allowed_names (e.g., Service, Database, Controller) or map unlisted terms per dynamic_mapping (e.g., 'NativeScript' → container 'MobileApp' { technology 'NativeScript' }). For main systems, prefer glossary terms like 'Service' (e.g., 'CertificadosService'). Component names must not repeat their type (e.g., use 'Auth' not 'Adapter AuthAdapter'). Validate technology properties against documentation with pre-generation validation, rejecting undocumented or overly specific technologies (e.g., 'Flutter', 'Node.js 16 / Firebase Functions' if documentation specifies 'Node.js'). Example: `CertificadosService`, `container \"MobileApp\" { technology \"NativeScript\" }`, `component \"Auth\" { technology \"Node.js\" }`.",
+      "correction_strategy": "Replace forbidden names with closest glossary term or apply dynamic_mapping. Remove redundant type prefixes in component names (e.g., 'Adapter AuthAdapter' → 'Auth'). Replace invalid technologies with those from documentation (e.g., 'Flutter' → 'NativeScript').",
       "examples": [
         {
           "valid": true,
@@ -664,19 +655,23 @@
           "dsl": "mobile = container \"MobileApp\" {\n    description \"Mobile interface\"\n    technology \"NativeScript\"\n    tags \"container mobile\"\n}"
         },
         {
+          "valid": true,
+          "dsl": "auth = component \"Auth\" {\n    description \"Handles authentication\"\n    technology \"Node.js\"\n    tags \"component\"\n}"
+        },
+        {
           "valid": false,
           "dsl": "app = softwareSystem \"ModuleCertificados\" {\n    description \"App\"\n    tags \"system\"\n}",
           "error": "Forbidden name: module"
         },
         {
           "valid": false,
-          "dsl": "app = softwareSystem \"Sistema de Certificados Digitales\" {\n    description \"App\"\n    tags \"system\"\n}",
-          "error": "Descriptive name; prefer glossary term like 'CertificadosService'"
+          "dsl": "auth = component \"Adapter AuthAdapter\" {\n    description \"Handles authentication\"\n    technology \"Node.js\"\n    tags \"component\"\n}",
+          "error": "Redundant component name: 'Adapter AuthAdapter'; use 'Auth'"
         },
         {
           "valid": false,
-          "dsl": "mobile = container \"MobileApp\" {\n    description \"Mobile interface\"\n    technology \"Flutter\"\n    tags \"container mobile\"\n}",
-          "error": "Invalid technology: 'Flutter'; must use 'NativeScript' from documentation"
+          "dsl": "api = container \"API\" {\n    description \"Backend\"\n    technology \"Node.js 16 / Firebase Functions\"\n    tags \"container api\"\n}",
+          "error": "Invalid technology: 'Node.js 16 / Firebase Functions'; use 'Node.js' from documentation"
         }
       ]
     },
@@ -763,8 +758,8 @@
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Use verbs from allowed_verbs in `SOURCE -> DESTINATION \"VERB DESCRIPTION\"`, mandatorily enforcing clarifications (e.g., SAT → 'carga', Firebase backend → 'almacena'/'procesa', SEP guidelines → 'consulta'/'verifica'). Apply pre-generation validation to ensure clarification-driven verbs. In Component diagrams, relationships should involve components within a container or user-to-component actions. Example: `app -> db \"Consulta datos\"`, `user -> app \"Carga firma electrónica\"` for SAT. Description must start with verb.",
-      "correction_strategy": "Replace invalid verbs with closest allowed verb per synonyms or clarifications (e.g., 'envía' → 'carga' for SAT, 'envía' → 'verifica' for SEP). Ensure clarification-driven verbs are prioritized (e.g., SAT interactions must use 'carga').",
+      "instruction": "Use verbs from allowed_verbs in `SOURCE -> DESTINATION \"VERB DESCRIPTION\"`, mandatorily enforcing clarifications (e.g., SAT → 'carga', Firebase → 'almacena'/'procesa', SEP → 'consulta'/'verifica', user actions → 'solicita'/'carga'). Apply pre-generation validation to ensure clarification-driven verbs. In Component diagrams, relationships should involve components within a container or user-to-component actions. Description must start with an allowed verb. Example: `app -> db \"Consulta datos\"`, `user -> app \"Carga firma electrónica\"` for SAT, `user -> app \"Solicita certificados\"` for user actions.",
+      "correction_strategy": "Replace invalid verbs with closest allowed verb per synonyms or clarifications (e.g., 'genera' → 'solicita' for user actions, 'envía' → 'carga' for SAT). Ensure clarification-driven verbs are prioritized.",
       "examples": [
         {
           "valid": true,
@@ -775,14 +770,18 @@
           "dsl": "user -> app \"Carga firma electrónica\""
         },
         {
-          "valid": false,
-          "dsl": "app -> sat \"Envía documentos para firma electrónica\"",
-          "error": "Invalid verb: Envía, violates SAT clarification"
+          "valid": true,
+          "dsl": "user -> app \"Solicita certificados\""
         },
         {
           "valid": false,
-          "dsl": "app -> sep \"Envía archivos XML para validación y registro\"",
-          "error": "Invalid verb: Envía, should use 'verifica' or 'consulta' for SEP guidelines"
+          "dsl": "user -> app \"Genera certificados\"",
+          "error": "Invalid verb: 'genera' for user action; use 'solicita' or 'carga'"
+        },
+        {
+          "valid": false,
+          "dsl": "app -> sat \"Envía documentos para firma electrónica\"",
+          "error": "Invalid verb: 'envía' for SAT; use 'carga'"
         }
       ]
     },
