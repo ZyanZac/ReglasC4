@@ -344,7 +344,8 @@
     "R12-NO-COMMENTS",
     "R13-VIEW-OPTIONAL",
     "R14-STYLE-DEFINITIONS",
-    "R15-DISTINCT-DESCRIPTIONS"
+    "R15-DISTINCT-DESCRIPTIONS",
+    "R16-STRUCTURIZR-DSL-ONLY"
   ],
   "validation_groups": [
     {
@@ -353,7 +354,8 @@
         "R01-WORKSPACE-ONLY",
         "R02-MODEL-VIEWS",
         "R04-LEVEL-ENFORCEMENT",
-        "R13-VIEW-OPTIONAL"
+        "R13-VIEW-OPTIONAL",
+        "R16-STRUCTURIZR-DSL-ONLY"
       ]
     },
     {
@@ -490,8 +492,8 @@
     }
   ],
   "generation_guidelines": {
-    "pre_validation": "Generate output strictly as Structurizr DSL, using fixed_template and example_mappings. Determine C4 level from description using level_detection, requiring explicit level specification. Apply provider-specific groups for all levels, strictly matching mapping_guidelines.groups, rejecting generic groups for known providers. Use distinct descriptions, mandatory clarification parsing with pre-generation validation, and exact fixed_template view titles (e.g., 'SystemContext' for systemContext views). Remove all comments (//, #, /*, */) with mandatory pre-generation validation. Place relationships within model block. Use dynamic_mapping for unlisted terms. For Component diagrams, ensure components are defined within a single container. Validate view syntax, titles, and indentation pre-generation. Check known_issues.",
-    "post_validation": "Validate against rules in validation_order, ensuring correct C4 level, Structurizr DSL syntax, exact view titles, correct grouping, and description adherence."
+    "pre_validation": "Generate output strictly as Structurizr DSL, using fixed_template and example_mappings, with no other formats (e.g., ASCII, JSON, UML) permitted. Determine C4 level from description using level_detection, requiring explicit level specification. Apply provider-specific groups for all levels, strictly matching mapping_guidelines.groups, rejecting generic groups for known providers. Include all external systems mentioned in the description (e.g., Firebase, Rekognition, SAT, SEP), validated pre-generation. Use distinct descriptions, mandatory clarification parsing with pre-generation validation (e.g., 'carga' for SAT, 'verifica' for SEP), and exact fixed_template view titles (e.g., 'SystemContext'). Remove all comments (//, #, /*, */) with mandatory pre-generation validation. Place relationships within model block. Use dynamic_mapping for unlisted terms, prioritizing description-specific technologies (e.g., 'Node.js' over 'Spring Boot'). For Container diagrams, ensure all containers are nested within a softwareSystem block, and persons/external systems are at the model level in groups. For Component diagrams, ensure components are within a single container. Reject inline softwareSystem definitions or non-DSL outputs. Validate view syntax, titles, and indentation pre-generation. After correction requests, maintain Structurizr DSL format. Check known_issues and enforce R16-STRUCTURIZR-DSL-ONLY.",
+    "post_validation": "Validate against rules in validation_order, ensuring correct C4 level, Structurizr DSL syntax, exact view titles, correct grouping, inclusion of all external systems, and description adherence. Confirm output is Structurizr DSL per R16-STRUCTURIZR-DSL-ONLY."
   },
   "rules": [
     {
@@ -723,15 +725,15 @@
     },
     {
       "id": "R09-SYNTAX-VALIDATION",
-      "title": "Ensure valid syntax",
-      "description": "DSL must have valid Structurizr syntax without semicolons, with relationships in model block, correct view definitions, and exact formatting.",
+      "title": "Ensure valid Structurizr DSL syntax",
+      "description": "DSL must have valid Structurizr syntax without semicolons, with relationships in model block, correct view definitions, and exact formatting. Non-DSL formats (e.g., ASCII, JSON) are rejected.",
       "applies_to": [
         "dsl.syntax"
       ],
       "severity": "error",
       "validation": "automated",
-      "instruction": "Ensure balanced braces, closed quotes, no invalid characters, no semicolons, relationships within `model`, and valid view syntax exactly matching fixed_template (e.g., `systemContext IDENTIFIER \"SystemContext\" { include *\n    autoLayout lr }`, `component CONTAINER_ID \"Components\" { include *\n    autoLayout lr }`). Validate indentation, exact titles (e.g., 'SystemContext', 'Components'), and reject malformed view blocks or dotted identifiers (e.g., `app.container`). Relationships must be inside the `model` block, not at the workspace level or elsewhere. Apply pre-generation validation to enforce fixed_template titles and structure. Example: `workspace { model { user -> app \"Action\" } views { component backend \"Components\" { include *\n    autoLayout lr } } }`.",
-      "correction_strategy": "Fix braces, quotes, remove invalid characters/semicolons, move relationships to model block, correct view syntax to match fixed_template (e.g., replace `component app.container \"Backend\"` with `component backend \"Components\"`, ensure newline after include, fix indentation).",
+      "instruction": "Ensure balanced braces, closed quotes, no invalid characters, no semicolons, relationships within `model`, and valid view syntax exactly matching fixed_template (e.g., `systemContext IDENTIFIER \"SystemContext\" { include *\n    autoLayout lr }`, `component CONTAINER_ID \"Components\" { include *\n    autoLayout lr }`). Validate indentation, exact titles (e.g., 'SystemContext', 'Components'), and reject malformed view blocks, dotted identifiers (e.g., `app.container`), or non-DSL formats (e.g., ASCII, JSON). Relationships must be inside the `model` block. Apply pre-generation validation to enforce fixed_template structure and R16-STRUCTURIZR-DSL-ONLY. Example: `workspace { model { user -> app \"Action\" } views { component backend \"Components\" { include *\n    autoLayout lr } } }`.",
+      "correction_strategy": "Fix braces, quotes, remove invalid characters/semicolons, move relationships to model block, correct view syntax to match fixed_template (e.g., replace `component app.container \"Backend\"` with `component backend \"Components\"`, ensure newline after include, fix indentation). Convert non-DSL outputs to Structurizr DSL using fixed_template.",
       "examples": [
         {
           "valid": true,
@@ -744,8 +746,8 @@
         },
         {
           "valid": false,
-          "dsl": "workspace {\n    model { }\n    views { component app.container \"Backend\" { include *; autoLayout lr } }\n}",
-          "error": "Invalid component view: dotted identifier 'app.container'; use container identifier (e.g., 'backend')"
+          "dsl": "+---------+\n|  User   |\n+---------+\n   |     \n   v     \n+---------+\n|  System |\n+---------+",
+          "error": "Invalid ASCII output; must be Structurizr DSL"
         }
       ]
     },
@@ -917,6 +919,34 @@
           "valid": false,
           "dsl": "app = softwareSystem \"App\" { description \"Genera certificados\"; tags \"system\" } user -> app \"Solicita la generación de certificados y títulos digitales\"",
           "error": "Relationship description redundant with element description"
+        }
+      ]
+    },
+    {
+      "id": "R16-STRUCTURIZR-DSL-ONLY",
+      "title": "Output in Structurizr DSL only",
+      "description": "All generated C4 model diagrams must be in Structurizr DSL format, strictly adhering to the fixed_template structure. Non-DSL formats (e.g., ASCII, JSON, UML, or other diagramming notations) are prohibited. Correction requests must also result in Structurizr DSL output.",
+      "applies_to": [
+        "output"
+      ],
+      "severity": "error",
+      "validation": "automated",
+      "instruction": "Generate output exclusively as Structurizr DSL, using the fixed_template for the specified C4 level (systemContext, container, component). Ensure the output includes `workspace`, `model`, and `views` blocks with proper syntax (e.g., `workspace \"SYSTEM_NAME\" { model { } views { } }`). Reject ASCII diagrams, JSON, UML, or other formats. After correction requests, maintain Structurizr DSL format. Example: `workspace \"System\" { model { app = softwareSystem \"App\" { } } views { systemContext app \"SystemContext\" { include * } } }`. Apply pre-generation validation to enforce DSL format.",
+      "correction_strategy": "Convert any non-DSL output (e.g., ASCII, JSON) to Structurizr DSL using the fixed_template for the specified C4 level. Ensure correction outputs remain in DSL.",
+      "examples": [
+        {
+          "valid": true,
+          "dsl": "workspace \"System\" {\n    model {\n        user = person \"User\" {\n            description \"User\"\n            tags \"User\"\n        }\n        app = softwareSystem \"App\" {\n            description \"App\"\n            tags \"system\"\n        }\n        user -> app \"Solicita acción\"\n    }\n    views {\n        systemContext app \"SystemContext\" {\n            include *\n            autoLayout lr\n        }\n        styles {\n            element \"Person\" { background #08427b; color white; shape person }\n            element \"system\" { background #003366; color white; shape roundedbox }\n        }\n    }\n}"
+        },
+        {
+          "valid": false,
+          "dsl": "+---------+\n|  User   |\n+---------+\n   |     \n   v     \n+---------+\n|  System |\n+---------+",
+          "error": "Invalid ASCII diagram; output must be Structurizr DSL"
+        },
+        {
+          "valid": false,
+          "dsl": "{\"model\":{\"user\":\"User\",\"system\":\"App\"}}",
+          "error": "Invalid JSON output; output must be Structurizr DSL"
         }
       ]
     }
